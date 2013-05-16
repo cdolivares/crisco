@@ -1,0 +1,30 @@
+{
+    "name": "Crisco",
+    "description": "A slick framework",
+    "version": "0.0.1",
+    "private": true,
+    "repository": {
+        "type": "git",
+        "url": ""
+    },
+    "author": "Chris Olivares <chris@classdojo.com>",
+    "main": "./index.js",
+    "scripts": {
+      "watch" : "coffee -c -w  -o lib src"
+    },
+    "directories": {
+        "lib": "."
+    },
+    "dependencies": { 
+        "coffee-script": "1.4.0",
+        "underscore": "1.4.2",
+        "express": "3.2.4"
+    },
+    "devDependencies": { 
+        "mocha": "1.7.x",
+        "expect.js": "0.2.0"
+    },
+    "engines": {
+        "node": ">=0.6.19"
+    }
+}
