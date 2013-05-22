@@ -10,26 +10,25 @@ class Getter
   
   constructor: (@_p) ->
 
-  load: (clbk) ->
+  load: () ->
     #either require or fs read
-    fs.stat @_p, (err, stats) =>
-      if err?
-        clbk err
-      else
-        if stats.isFile()
-          @_elems = require(@_p)
-        else
-          @_elems = {}
-          files = fs.readdirSync(@_p)
-          for file in files
-            @_elems[file] = require("#{__dirname}/file")
-          clbk null
-
+    if fs.statSync(@_p).isFile()
+      @_elems = require(@_p)
+    else
+      @_elems = {}
+      files = fs.readdirSync(@_p)
+      for file in files
+        if fs.statSync("#{@_p}/#{file}").isFile()
+          @_elems[@_prefix(file)] = require("#{@_p}/#{file}")
+    return @
 
   get: () ->
     return @_elems
 
   @::__defineGetter__ 'path', () ->
     return @_p
+
+  _prefix: (fileName) ->
+    return fileName.split(".")[0]
 
 module.exports = Getter

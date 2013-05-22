@@ -5,7 +5,7 @@
       BaseAction;
 
 
-  CriscoCore = require("./lib/core/crisco")
+  CriscoCore = require("./lib/core/crisco");
 
   exports = Crisco = function(config) {
     //initialize Crisco here.
@@ -25,6 +25,6 @@
 
   //global utils
   //...but globals are terrible. -chris
-  _ = require("underscore")
+  _ = require("underscore");
 
 })(exports);

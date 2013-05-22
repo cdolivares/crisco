@@ -17,6 +17,7 @@ class SchemaInitializer
 
   init: (clbk) ->
     _plugins = @_pGetter.get()
+    console.log "#{@_dbSettingsGetter.get()}"
     _dbSettings = @_dbSettingsGetter.get().init(process.env.NODE_ENV)
     _db = new Database(@_sGetter.path, @_dbSettings.path)
 

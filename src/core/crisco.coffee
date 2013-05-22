@@ -44,33 +44,33 @@ class Crisco
 
   start: (clbk) ->
     config           = @_config
-    schemasGetter    = new Getter(config.schemaPath)
-    resourceGetter   = new Getter(config.resourcePath)
-    pluginGetter     = new Getter(config.pluginPath)
-    dbSettingsGetter = new Getter(config.dbSettingsPath)
-    actionsGetter    = new Getter(config.actionsPath)
+    schemasGetter    = new Getter(config.schemaPath).load()
+    resourceGetter   = new Getter(config.resourcePath).load()
+    pluginGetter     = new Getter(config.pluginPath).load()
+    dbSettingsGetter = new Getter(config.dbSettingsPath).load()
+    actionsGetter    = new Getter(config.actionsPath).load()
 
-    #Initialization a bit verbose here...let's cleanup
-    app = new ApplicationInitializer(
-              schemasGetter,
-              resourceGetter,
-              pluginGetter,
-              dbSettingsGetter,
-              actionsGetter
-              )
+    # #Initialization a bit verbose here...let's cleanup
+    # app = new ApplicationInitializer(
+    #           schemasGetter,
+    #           resourceGetter,
+    #           pluginGetter,
+    #           dbSettingsGetter,
+    #           actionsGetter
+    #           )
 
-    app.init (err) =>
-      console.log "App Initialized"
+    # app.init (err) =>
+    #   console.log "App Initialized"
       
 
   ###
     BaseAction and BaseResource Getters
   ###
   @::__defineGetter__ 'BaseAction', () ->
-    return BaseAction
+    return BaseAction.clone()
 
   @::__defineGetter__ 'BaseResource', () ->
-    return BaseResource
+    return BaseResource.clone()
 
 
 module.exports = Crisco

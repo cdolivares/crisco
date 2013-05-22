@@ -57,28 +57,28 @@ class BaseResource
         tag:     @_t
         route:   route
         handler: routeHandler
-      @_reset()
+      f._reset()
 
     f.app.post = (route, routeHandler) ->
       f._routes.push
         tag: @_t
         route: route
         handler: routeHandler
-      @_reset()
+      f._reset()
 
     f.app.put  = (route, routeHandler) ->
       f._routes.push
         tag: @_t
         route: route
         handler: routeHandler
-      @_reset()
+      f._reset()
 
     f.app.del  = (route, routeHandler) ->
       f._routes.push
         tag: @_t
         route: route
         handler: routeHandler
-      @_reset()
+      f._reset()
 
     f._reset = () ->
       @_t = null
