@@ -4,12 +4,14 @@ class ResourceInitializer
     @_resourceGetter = resourceGetter
 
   init: (clbk) ->
+    @_resourceGetter.init()
     clbk()
 
   enrich: (express, clbk) ->
     ResourceConfigurations = @_resourceGetter.get()
-    for config in ResourceConfigurations
-      console.log "Enriching resources..."
+    for rName, config of ResourceConfigurations
+      console.log "Enriching resource...", rName
+      console.log config.serialize()
       #for each resource group initialize
       #a CriscoResource handler
 

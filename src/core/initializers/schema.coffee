@@ -17,8 +17,6 @@ class SchemaInitializer
 
   init: (clbk) ->
     _plugins = @_pGetter.get()
-    console.log "#{@_sGetter.path}"
-    console.log "#{@_dbSettingsGetter.path}"
     _db = new Database(@_sGetter.path, @_dbSettingsGetter.path).init()
 
     for pluginName, plugin of _plugins

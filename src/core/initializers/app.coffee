@@ -25,11 +25,23 @@ class AppInitializer
     @_initializers.action   = _action =
         new ActionInitializer(@_p)
 
+    @__init (err) =>
+      if err?
+        console.error "Error In Application Initialization"
+        console.error err.message
+      else
+        _resource.enrich()
+
+      #loaders initialized...
+
+  __init: (clbk) ->
     #TODO(chris): Error handle here...
-    _schema.init (err) =>
-      _resource.init (err) =>
-        _action.init (err) =>
-          #
+    @_initializers.schema.init (err) =>
+      @_initializers.resource.init (err) =>
+        @_initializers.action.init (err) =>
+          #construct actual express
+
+          clbk null
 
 
 module.exports = AppInitializer

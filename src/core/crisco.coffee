@@ -5,6 +5,14 @@ ApplicationInitializer =
     require("#{__dirname}/initializers/app")
 
 ###
+  Default Middleware
+###
+PermissionMiddleware =
+    require("#{__dirname}/middleware/default/permission")
+AuthenticationMiddleware =
+    require("#{__dirname}/middleware/default/authentication")
+
+###
   Class: Crisco
 
   Application class that exports application level functions.
@@ -50,6 +58,15 @@ class Crisco
     dbSettingsGetter = new Getter(config.dbSettingsPath)
     actionsGetter    = new Getter(config.actionsPath)
 
+    ###
+      Register Default Middleware
+        -Authentication
+        -Permissions
+    ###
+
+    @registerMiddleware "verifyPermissions", PermissionMiddleware
+    @registerMiddleware "authenticate", AuthenticationMiddleware
+
     # #Initialization a bit verbose here...let's cleanup
     app = new ApplicationInitializer(
               schemasGetter,
@@ -59,7 +76,7 @@ class Crisco
               actionsGetter
               )
 
-    app.init (err) =>      
+    app.init (err) =>
 
   ###
     BaseAction and BaseResource Getters
