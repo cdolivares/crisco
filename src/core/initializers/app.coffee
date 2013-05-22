@@ -25,8 +25,11 @@ class AppInitializer
     @_initializers.action   = _action =
         new ActionInitializer(@_p)
 
+    #TODO(chris): Error handle here...
     _schema.init (err) =>
       _resource.init (err) =>
         _action.init (err) =>
+          #
+
 
 module.exports = AppInitializer

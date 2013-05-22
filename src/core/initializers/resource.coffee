@@ -4,8 +4,7 @@ class ResourceInitializer
     @_resourceGetter = resourceGetter
 
   init: (clbk) ->
-    @_resourceGetter.load (err) =>
-      clbk err
+    clbk()
 
   enrich: (express, clbk) ->
     ResourceConfigurations = @_resourceGetter.get()

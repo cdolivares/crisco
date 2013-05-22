@@ -4,8 +4,8 @@ class ActionInitializer
     @_actionGetter = actionGetter
 
   init: (clbk) ->
-    @_actionGetter.load (err) =>
-      clbk err
+    @_actionGetter.init()
+    clbk null
 
   ###
     Method: enrich
