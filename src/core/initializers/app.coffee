@@ -1,6 +1,14 @@
+###
+  Application Initializers
+###
+
 SchemaInitializer = require("#{__dirname}/schema")
-ResourceInitializer = require("#{__dirname}/resource")
-ActionInitializer = require("#{__dirname}/action")
+RouteInitializer = require("#{__dirname}/route")
+
+###
+  Action and Resource Collectors
+###
+ActionCollector = require("#{__dirname}/../action/collector")
 
 
 class AppInitializer
@@ -10,7 +18,7 @@ class AppInitializer
 
 
   ###
-  constructor: (schemas, resources, plugins, dbSettings, actions) ->
+  constructor: (schemasG, resourcesG, pluginsG, dbSettingsG, actionsG) ->
     @_s = schemas
     @_r = resources
     @_p = plugins

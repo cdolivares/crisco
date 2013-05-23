@@ -27,12 +27,6 @@ class BaseResource
     f.after = (afterHooks) ->
       @_ah = afterHooks
 
-    #let's add registered middleware
-    # if @_m?
-    #   for mName, mDef of @_m
-    #     f[mName] = mDef
-
-
     f.tag = (tag) ->
       @_t = tag
 
@@ -56,6 +50,7 @@ class BaseResource
       f._routes.push
         tag:     @_t
         route:   route
+        method: "GET"
         handler: routeHandler
       f._reset()
 
@@ -63,6 +58,7 @@ class BaseResource
       f._routes.push
         tag: @_t
         route: route
+        method: "POST"
         handler: routeHandler
       f._reset()
 
@@ -70,6 +66,7 @@ class BaseResource
       f._routes.push
         tag: @_t
         route: route
+        method: "PUT"
         handler: routeHandler
       f._reset()
 
@@ -77,6 +74,7 @@ class BaseResource
       f._routes.push
         tag: @_t
         route: route
+        method: "DEL"
         handler: routeHandler
       f._reset()
 
@@ -90,6 +88,8 @@ class BaseResource
         beforeHooks: f._bh
         afterHooks: f._ah
         routes: f._routes
+        m: BaseResource._m
+
       return o
 
     f.deserialize = (conf) ->

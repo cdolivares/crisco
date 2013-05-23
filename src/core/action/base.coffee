@@ -18,10 +18,14 @@ class BaseAction
     f._routes = []
     f._d = 'default'
 
-    #let's add registered middleware
-    if @_m?
-      for mName, mDef of @_m
-        f[mName] = mDef
+    ###
+      Before and After hooks
+    ###
+    f.before = (beforeHooks) ->
+      @_bh = beforeHooks
+
+    f.after = (afterHooks) ->
+      @_ah = afterHooks
 
     f.app = () ->
 
@@ -36,7 +40,20 @@ class BaseAction
 
     f.serialize = () ->
       #serialization here
-      return f._routes
+      o =
+        domain: f._d
+        beforeHooks: f._bh
+        afterHooks: f._ah
+        routes: f._routes
+        m: BaseAction._m
+
+      return o
+
+    f.deserialize = (conf) ->
+      @_d = conf.domain || @_d
+      @_bh = conf.beforeHooks || @_bh
+      @_ah = conf.afterHooks || @_ah
+      @_routes = conf.routes || @_routes
 
     return f
 
