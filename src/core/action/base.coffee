@@ -16,16 +16,17 @@ class BaseAction
     f = () ->
 
     f._routes = []
+    f.__vars = {}
     f._d = 'default'
 
     ###
       Before and After hooks
     ###
     f.before = (beforeHooks) ->
-      @_bh = beforeHooks
+      @__vars.bh = beforeHooks
 
     f.after = (afterHooks) ->
-      @_ah = afterHooks
+      @__vars.ah = afterHooks
 
     f.app = () ->
 
@@ -36,23 +37,23 @@ class BaseAction
       console.log "Action !", route
 
     f._reset = () ->
-      @_t = null
+      @__vars.t = null
 
     f.serialize = () ->
       #serialization here
       o =
-        domain: f._d
-        beforeHooks: f._bh
-        afterHooks: f._ah
+        domain: f.__vars.d || "default"
+        beforeHooks: f.__vars.bh
+        afterHooks: f.__vars.ah
         routes: f._routes
         m: BaseAction._m
 
       return o
 
     f.deserialize = (conf) ->
-      @_d = conf.domain || @_d
-      @_bh = conf.beforeHooks || @_bh
-      @_ah = conf.afterHooks || @_ah
+      @__vars.d = conf.domain || @__vars.d
+      @__vars.bh = conf.beforeHooks || @__vars.bh
+      @__vars.ah = conf.afterHooks || @__vars.ah
       @_routes = conf.routes || @_routes
 
     return f

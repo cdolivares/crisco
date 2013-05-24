@@ -6,11 +6,11 @@
 DefaultGet  =
     require("#{__dirname}/defaults/resource/get")
 DefaultPut  =
-    require("#{__dirname}/default/resource/put")
+    require("#{__dirname}/defaults/resource/put")
 DefaultPost =
-    require("#{__dirname}/default/resource/post")
+    require("#{__dirname}/defaults/resource/post")
 DefaultDel  =
-    require("#{__dirname}/default/resource/del")
+    require("#{__dirname}/defaults/resource/del")
 
 ###
   Helpers
@@ -60,16 +60,17 @@ class ResourceDomain
   enrich: () ->
     routeKeyedBefore = MWareTransformer.transform @__c.beforeHooks
     routeKeyedAfter  = MWareTransformer.transform @__c.afterHooks
-
     for r in @__c.routes
       beforeHooks = routeKeyedBefore[r.tag] || routeKeyedBefore["default"]
       afterHooks = routeKeyedAfter[r.tag] || routeKeyedAfter["default"]
       [fn, routeHandler] = @_constructRouteHandler(r)
+      clbk = (req, res) ->
       args = [routeHandler.route]
-                .concat(beforeHooks)
+                .concat(_.filter(_.map(beforeHooks, (n) => @__c.m[n]), (z) => _.isFunction(z))) #map to middleware defns and filter out undefined values
                 .concat([routeHandler.handler])
-                .concat(afterHooks)
-      fn.apply(fn, args)
+                .concat(_.filter(_.map(afterHooks, (n) => @__c.m[n]), (z) => _.isFunction(z)))
+                .concat([clbk])
+      fn.apply(@__e, args)
 
 
   _constructRouteHandler: (r) ->

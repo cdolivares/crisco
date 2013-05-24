@@ -69,11 +69,11 @@ class Crisco
 
     # #Initialization a bit verbose here...let's cleanup
     app = new ApplicationInitializer(
-              schemasGetter,
+              actionsGetter,
               resourceGetter,
+              schemasGetter,
               pluginGetter,
-              dbSettingsGetter,
-              actionsGetter
+              dbSettingsGetter
               )
 
     app.init (err) =>

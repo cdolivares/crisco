@@ -26,5 +26,7 @@
   //global utils
   //...but globals are terrible. -chris
   _ = require("underscore");
+  _.trim = (s) ->
+    s.replace(/\s/g, "");
 
 })(exports);

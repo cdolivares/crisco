@@ -16,26 +16,27 @@ class BaseResource
     f = () ->
 
     f._routes = []
+    f.__vars = {}
     f._d = "default"
 
     ###
       Before and After hooks
     ###
     f.before = (beforeHooks) ->
-      @_bh = beforeHooks
+      @__vars.bh = beforeHooks
 
     f.after = (afterHooks) ->
-      @_ah = afterHooks
+      @__vars.ah = afterHooks
 
     f.tag = (tag) ->
-      @_t = tag
+      @__vars.t = tag
 
     #let's make f.app simply an application loader that standardizes the 
     #action and route files in a way that CriscoRouter can understand.
     f.app = () ->
 
     f.domain = (d) ->
-      @_d = d
+      @__vars.d = d
 
 
     f.app.get = (route, routeHandler) ->
@@ -48,7 +49,7 @@ class BaseResource
         }
       ###
       f._routes.push
-        tag:     @_t
+        tag:     f.__vars.t
         route:   route
         method: "GET"
         handler: routeHandler
@@ -56,7 +57,7 @@ class BaseResource
 
     f.app.post = (route, routeHandler) ->
       f._routes.push
-        tag: @_t
+        tag: f.__vars.t
         route: route
         method: "POST"
         handler: routeHandler
@@ -64,7 +65,7 @@ class BaseResource
 
     f.app.put  = (route, routeHandler) ->
       f._routes.push
-        tag: @_t
+        tag: f.__vars.t
         route: route
         method: "PUT"
         handler: routeHandler
@@ -72,30 +73,30 @@ class BaseResource
 
     f.app.del  = (route, routeHandler) ->
       f._routes.push
-        tag: @_t
+        tag: f.__vars.t
         route: route
         method: "DEL"
         handler: routeHandler
       f._reset()
 
     f._reset = () ->
-      @_t = null
+      f._t = null
 
     f.serialize = () ->
       #serialization here
       o =
-        domain: f._d
-        beforeHooks: f._bh
-        afterHooks: f._ah
+        domain: f.__vars.d || "default"
+        beforeHooks: f.__vars.bh
+        afterHooks: f.__vars.ah
         routes: f._routes
         m: BaseResource._m
 
       return o
 
     f.deserialize = (conf) ->
-      @_d = conf.domain || @_d
-      @_bh = conf.beforeHooks || @_bh
-      @_ah = conf.afterHooks || @_ah
+      @__vars.d = conf.domain || @__vars.d
+      @__vars.bh = conf.beforeHooks || @__vars.bh
+      @__vars.ah = conf.afterHooks || @__vars.ah
       @_routes = conf.routes || @_routes
 
     return f

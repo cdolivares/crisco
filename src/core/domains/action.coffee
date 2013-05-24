@@ -13,8 +13,7 @@ class ActionDomain
     @_c = config
 
   enrich: () ->
-    console.log "Enriching an Action..."
-
+    console.log "Enriching an action"
     #for each action route find
     
       #before middleware

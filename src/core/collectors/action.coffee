@@ -1,5 +1,5 @@
 ###
-  Class: ActionCollector
+  Class: ActionCollector  aka. "Factory"
 
   Collects Action level configurations and carries out
   the appropriate operations to add them to an initialized
@@ -14,6 +14,15 @@ class ActionCollector
   constructor: (express) ->
     @_e = express
     @_actions = {}
+
+  ###
+    Method: add
+    
+    Adds an actionDomain to the ActionDomain collection.
+    
+    @param "string" that's the name of this particular domain
+    @param "object" describing the state of the action domain
+  ###
 
   add: (name, config) ->
     ad = new ActionDomain(@_e, config)

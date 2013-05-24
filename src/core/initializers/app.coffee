@@ -8,8 +8,10 @@ RouteInitializer = require("#{__dirname}/route")
 ###
   Action and Resource Collectors
 ###
-ActionCollector = require("#{__dirname}/../action/collector")
+ActionCollector = require("#{__dirname}/../collectors/action")
+ResourceCollector = require("#{__dirname}/../collectors/resource")
 
+Express = require("express")
 
 class AppInitializer
 
@@ -18,37 +20,36 @@ class AppInitializer
 
 
   ###
-  constructor: (schemasG, resourcesG, pluginsG, dbSettingsG, actionsG) ->
-    @_s = schemas
-    @_r = resources
-    @_p = plugins
-    @_dbSettings = dbSettings
+  constructor: (actionsG, resourcesG, schemasG, pluginsG, dbSettingsG) ->
+    @_s = schemasG
+    @_r = resourcesG
+    @_p = pluginsG
+    @_a = actionsG
+    @_dbSettings = dbSettingsG
     @_initializers = {}
+    @_e = Express()
 
   init: (clbk) ->
-    @_initializers.schema = _schema =
-        new SchemaInitializer(@_s, @_p, @_dbSettings)
-    @_initializers.resource = _resource =
-        new ResourceInitializer(@_r)
-    @_initializers.action   = _action =
-        new ActionInitializer(@_p)
 
-    @__init (err) =>
+    resourceCollector = new ResourceCollector(@_e)
+    actionCollector = new ActionCollector(@_e)
+
+    @_initializers.schema   = new SchemaInitializer(@_s, @_p, @_dbSettings)
+    @_initializers.resource = new RouteInitializer(@_r, resourceCollector)
+    @_initializers.action   = new RouteInitializer(@_a, actionCollector)
+
+    @_init (err) =>
       if err?
         console.error "Error In Application Initialization"
         console.error err.message
       else
-        _resource.enrich()
-
+        @_initializers.resource.enrich()
       #loaders initialized...
 
-  __init: (clbk) ->
-    #TODO(chris): Error handle here...
+  _init: (clbk) ->
     @_initializers.schema.init (err) =>
       @_initializers.resource.init (err) =>
         @_initializers.action.init (err) =>
-          #construct actual express
-
           clbk null
 
 
