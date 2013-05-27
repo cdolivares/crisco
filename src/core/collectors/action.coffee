@@ -1,5 +1,5 @@
 ###
-  Class: ActionCollector  aka. "Factory"
+  Class: ActionCollector
 
   Collects Action level configurations and carries out
   the appropriate operations to add them to an initialized
@@ -11,9 +11,10 @@ ActionDomain = require("#{__dirname}/../domains/action")
 
 class ActionCollector
 
-  constructor: (express) ->
-    @_e = express
-    @_actions = {}
+  constructor: (express, conditioner) ->
+    @__e  = express
+    @__cond = conditioner
+    @__actions = {}
 
   ###
     Method: add
@@ -25,14 +26,14 @@ class ActionCollector
   ###
 
   add: (name, config) ->
-    ad = new ActionDomain(@_e, config)
+    ad = new ActionDomain(@__e, config, @__cond)
     ad.enrich()
-    @_actions[name] = ad
+    @__actions[name] = ad
 
   get: (name) ->
     if name?
-      return @_actions[name]
+      return @__actions[name]
     else
-      return @_actions
+      return @__actions
 
 module.exports = ActionCollector

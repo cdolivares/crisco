@@ -28,8 +28,8 @@ class Crisco
   ###
 
   constructor: (config) ->
-    @_config = config
-    @_customMiddleware = {}
+    @__config = config
+    @__customMiddleware = {}
 
     #let's export crisco into the Global Namespace for
     #visibility in Resource and Action Controllers
@@ -45,13 +45,16 @@ class Crisco
   ###
 
   registerMiddleware: (name, middleware) ->
-    @_customMiddleware[name] = middleware
+    @__customMiddleware[name] = middleware
     #register with Action and Resources
     BaseAction.register name, middleware
     BaseResource.register name, middleware
 
+  getMiddleware: (name) ->
+    @__customMiddleware[name]
+
   start: (clbk) ->
-    config           = @_config
+    config           = @__config
     schemasGetter    = new Getter(config.schemaPath)
     resourceGetter   = new Getter(config.resourcePath)
     pluginGetter     = new Getter(config.pluginPath)
@@ -78,14 +81,18 @@ class Crisco
 
     app.init (err) =>
 
+
   ###
-    BaseAction and BaseResource Getters
+    Getters
   ###
   @::__defineGetter__ 'BaseAction', () ->
     return BaseAction.clone()
 
   @::__defineGetter__ 'BaseResource', () ->
     return BaseResource.clone()
+
+  @::__defineGetter__ 'appConfig', () ->
+    return @__config
 
 
 module.exports = Crisco

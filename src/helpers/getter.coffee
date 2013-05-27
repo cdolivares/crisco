@@ -2,6 +2,7 @@
   Class: Getter
 
   Small module that either requires a file or reads
+  from a directory of files
 ###
 
 fs = require('fs')

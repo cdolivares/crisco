@@ -36,6 +36,8 @@ class ResourceDomain
     @param - config - An object describing a 
              resource domain.
              See resource/base for more information.
+    @param - database - An instance of dojodatabase
+             that provides some basic
       {
         domain: "resourceDomain Name",
         beforeHooks: {"hookName": "opts"},
@@ -53,9 +55,10 @@ class ResourceDomain
       }
   ###
 
-  constructor: (express, config) ->
+  constructor: (express, config, conditioner) ->
     @__e = express
     @__c = config
+    @__c = conditioner
 
   enrich: () ->
     routeKeyedBefore = MWareTransformer.transform @__c.beforeHooks
@@ -65,7 +68,9 @@ class ResourceDomain
       afterHooks = routeKeyedAfter[r.tag] || routeKeyedAfter["default"]
       [fn, routeHandler] = @_constructRouteHandler(r)
       clbk = (req, res) ->
-      args = [routeHandler.route]
+      # Need to start the crisco chain with a Crisco route conditioner
+      args = @__c.get()
+                .concat([routeHandler.route])
                 .concat(_.filter(_.map(beforeHooks, (n) => @__c.m[n]), (z) => _.isFunction(z))) #map to middleware defns and filter out undefined values
                 .concat([routeHandler.handler])
                 .concat(_.filter(_.map(afterHooks, (n) => @__c.m[n]), (z) => _.isFunction(z)))
@@ -78,7 +83,6 @@ class ResourceDomain
     switch r.method
       when "GET"
         fn = @__e.get
-        #construct handler
         d = new DefaultGet()
       when "POST"
         fn = @__e.post

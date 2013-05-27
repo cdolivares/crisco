@@ -6,7 +6,9 @@
 
 class Aux
 
-  constructor: () ->
+  constructor: (domain, logger) ->
+    @__domain = domain
+    @__logger = logger
 
   ###
     Method: log

@@ -1,3 +1,4 @@
+Express = require("express")
 ###
   Application Initializers
 ###
@@ -11,7 +12,14 @@ RouteInitializer = require("#{__dirname}/route")
 ActionCollector = require("#{__dirname}/../collectors/action")
 ResourceCollector = require("#{__dirname}/../collectors/resource")
 
-Express = require("express")
+###
+  Route Conditioners
+###
+ResourceConditioner =
+    require("#{__dirname}/conditioners/resource")
+ActionConditioner   =
+    require ("#{__dirname}/conditioners/action")
+
 
 class AppInitializer
 
@@ -21,36 +29,47 @@ class AppInitializer
 
   ###
   constructor: (actionsG, resourcesG, schemasG, pluginsG, dbSettingsG) ->
-    @_s = schemasG
-    @_r = resourcesG
-    @_p = pluginsG
-    @_a = actionsG
-    @_dbSettings = dbSettingsG
-    @_initializers = {}
-    @_e = Express()
+    @__s = schemasG
+    @__r = resourcesG
+    @__p = pluginsG
+    @__a = actionsG
+    @__dbSettings = dbSettingsG
+    @__initializers = {}
+    @__e = Express()
 
   init: (clbk) ->
 
-    resourceCollector = new ResourceCollector(@_e)
-    actionCollector = new ActionCollector(@_e)
-
-    @_initializers.schema   = new SchemaInitializer(@_s, @_p, @_dbSettings)
-    @_initializers.resource = new RouteInitializer(@_r, resourceCollector)
-    @_initializers.action   = new RouteInitializer(@_a, actionCollector)
-
-    @_init (err) =>
+    #Need to first initialize the database so we can inject into
+    #our conditioners
+    @__initializers.schema   = new SchemaInitializer(@__s, @__p, @__dbSettings)
+    @__initializers.schema.init (err) =>
       if err?
-        console.error "Error In Application Initialization"
+        console.error "Problem initializing the database"
         console.error err.message
       else
-        @_initializers.resource.enrich()
-      #loaders initialized...
+        db = @__initializers.schema.database
 
-  _init: (clbk) ->
-    @_initializers.schema.init (err) =>
-      @_initializers.resource.init (err) =>
-        @_initializers.action.init (err) =>
-          clbk null
+        resourceConditioner = new ResourceConditioner(db)
+        actionConditioner = new ActionConditioner(db)
+
+        resourceCollector = new ResourceCollector(@__e, resourceConditioner)
+        actionCollector = new ActionCollector(@__e, resourceConditioner)
+
+        @__initializers.resource =
+            new RouteInitializer(@__r, resourceCollector)
+        @__initializers.action   =
+            new RouteInitializer(@__a, actionCollector)
+
+        @__initializers.resource.init (err) =>
+          if err?
+            clbk err
+          else
+            @__initializers.action.init (err) =>
+              if err?
+                clbk err
+              else
+                console.log "Initializing resources..."
+                @__initializers.resource.init (err) =>
 
 
 module.exports = AppInitializer

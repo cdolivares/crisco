@@ -11,19 +11,23 @@ class RouteInitializer
 
     @param - getter - initializes
     @param - collector - a collector that initializes
-            the application with serialized route instances
+             the application with serialized route instances
+    @param - conditioner - a request conditioner that knows
+             how to transform the raw request express object
+             into crisco route primitives
+             
   ###
   constructor: (getter, collector) ->
-    @_g = getter
-    @_c = collector
+    @__g = getter
+    @__c = collector
 
   init: (clbk) ->
-    @_g.init()
+    @__g.init()
     clbk()
 
   enrich: () ->
-    for name, confObj of @_g.get()
-      @_c.add name, confObj.serialize()
+    for name, confObj of @__g.get()
+      @__c.add name, confObj.serialize()
 
 
 module.exports = RouteInitializer

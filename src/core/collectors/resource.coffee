@@ -1,5 +1,5 @@
 ###
-  Class: ResourceCollector  aka. "Factory"
+  Class: ResourceCollector
 
   Collects Resource level configurations and carries out
   the appropriate operations to add them to an initialized
@@ -11,9 +11,10 @@ ResourceDomain = require("#{__dirname}/../domains/resource")
 
 class ResourceCollector
 
-  constructor: (express) ->
-    @_e = express
-    @_resources = {}
+  constructor: (express, conditioner) ->
+    @__e = express
+    @__cond = conditioner
+    @__resources = {}
 
   ###
     Method: add
@@ -25,14 +26,15 @@ class ResourceCollector
   ###
 
   add: (name, config) ->
-    rd = new ResourceDomain(@_e, config)
+    #inject domain handlers with the conditioner.
+    rd = new ResourceDomain(@__e, config, @__cond)
     rd.enrich()
-    @_resources[name] = rd
+    @__resources[name] = rd
 
   get: (name) ->
     if name?
-      return @_resources[name]
+      return @__resources[name]
     else
-      return @_resources
+      return @__resources
 
 module.exports = ResourceCollector

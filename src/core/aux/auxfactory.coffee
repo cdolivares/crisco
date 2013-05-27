@@ -9,13 +9,13 @@ Aux = require("#{__dirname}/aux")
 ###
 class AuxFactory
 
-  constructor: (appConfig, domains) ->
+  constructor: (appConfig, domainConfigs) ->
     @__appConfig = appConfig
-    @__domains = domains
+    @__domainConfigs = domainConfigs
     @__auxes = {}
 
   get: (domain) ->
-    console.log "Getting aux #{domain}"
+    console.log "Getting aux for domain #{domain}"
 
 
 module.exports = AuxFactory

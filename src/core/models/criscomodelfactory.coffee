@@ -1,9 +1,12 @@
+CriscoModel = require("#{__dirname}/criscomodel")
+
 ###
   Class: CriscoModelFactory
 
   Responsible for configuring CriscoModel
   instances for  each domain given an application
   config.
+
 ###
 
 class CriscoModelFactory
@@ -18,15 +21,24 @@ class CriscoModelFactory
       }
   ###
 
-  constructor: (appConfig, domains, database) ->
+  constructor: (appConfig, domainConfigs, database) ->
     @__appConfig = appConfig
-    @__domains = domains
+    @__domainConfigs = domainConfigs
     @__database = database
     @__criscoModels = {}
 
   get: (domain) ->
-    console.log "Getting domain #{domain}"
-
+    console.log "Getting CriscoModel for domain #{domain}"
+    r =
+      init: (req) =>
+        #extract route info here.
+        routeInfo =
+          route:  req.route
+          method: req.method
+          query:  req.query
+          body:   req.body
+        return new CriscoModel(domain, @__database, routeInfo)
+    return r
 
 
 module.exports = CriscoModelFactory

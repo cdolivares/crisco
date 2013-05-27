@@ -8,9 +8,10 @@
 
 class ActionDomain
 
-  constructor: (express, config) ->
-    @_e = express
-    @_c = config
+  constructor: (express, config, database) ->
+    @__e = express
+    @__c = config
+    @__d = database
 
   enrich: () ->
     console.log "Enriching an action"
