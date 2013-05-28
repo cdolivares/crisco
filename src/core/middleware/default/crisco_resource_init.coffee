@@ -38,26 +38,36 @@ Middleware =
 
     -Create CriscoModel and Aux
     instances
+
+  # TODO(chris): Might need to curry with
+    domainConfig if CriscoModel needs
+    domain configurable options to bootstrap
+    itself.
   ###
   '2': (domain) ->
     return (req, res, next) =>
-      console.log "Initializing Crisco Models..."
+      console.log "Initializing Crisco Models Primitives"
       cm = @__CriscoModels.get(domain)
       req.__crisco.model = cm.init(req)
+      aux = #simplified aux object for now.
+        req: req
+        res: res
+        log: console.log
+        error: console.error
+      req.__crisco.aux = aux
+      next()
 
 class CriscoResourceInit
 
-  constructor: (database) ->
-    appConfig = {}
-    domainConfig = {}
+  constructor: (database, appConfig) ->
     @__db = database
-    @__CriscoModels = new CriscoModels appConfig, domainConfig, @__db
+    @__CriscoModels = new CriscoModels appConfig, @__db
 
-  init: (clbk) ->
+  init: () ->
     #let's bind each middleware to THIS instance
-    for num, route of Middleware
-      Middleware[num] = route.bind(@)
-    clbk null
+    for step, route of Middleware
+      Middleware[step] = route.bind(@)
+    # clbk null
 
   getExpressMiddleware: (domain) ->
     return [

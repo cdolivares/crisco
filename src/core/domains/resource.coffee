@@ -13,6 +13,12 @@ DefaultDel  =
     require("#{__dirname}/defaults/resource/del")
 
 ###
+  Crisco Middleware Wrapper
+###
+MiddlewareWrapper =
+    require("#{__dirname}/../middleware/default/crisco_wrapper")
+
+###
   Helpers
 ###
 MWareTransformer =
@@ -69,30 +75,41 @@ class ResourceDomain
       [fn, routeHandler] = @_constructRouteHandler(r)
       clbk = (req, res) ->
       # Need to start the crisco chain with a Crisco route conditioner
+      beforeHooks = _.filter(_.map(beforeHooks, (n) => @__c.m[n]), (z) => _.isFunction(z))
+      afterHooks = _.filter(_.map(afterHooks, (n) => @__c.m[n]), (z) => _.isFunction(z))
+      wrappedBeforeHooks = _.map(beforeHooks,
+          (bh) => 
+            z = new MiddlewareWrapper(bh)
+            return z.handler()
+          )
+      wrappedAfterHooks = _.map(afterHooks,
+          (ah) =>
+            z = new MiddlewareWrapper(ah)
+            return z.handler()
+          )
       args =  [routeHandler.route] 
                 .concat(@__cond.get(@__c.domain))
-                .concat(_.filter(_.map(beforeHooks, (n) => @__c.m[n]), (z) => _.isFunction(z))) #map to middleware defns and filter out undefined values
+                .concat(wrappedBeforeHooks) #map to middleware defns and filter out undefined values
                 .concat([routeHandler.handler])
-                .concat(_.filter(_.map(afterHooks, (n) => @__c.m[n]), (z) => _.isFunction(z)))
+                .concat(wrappedAfterHooks)
                 .concat([clbk])
       fn.apply(@__e, args)
 
 
   _constructRouteHandler: (r) ->
-
     switch r.method
       when "GET"
         fn = @__e.get
-        d = new DefaultGet()
+        d = new DefaultGet(r)
       when "POST"
         fn = @__e.post
-        d = new DefaultPost()
+        d = new DefaultPost(r)
       when "PUT"
         fn = @__e.put
-        d = new DefaultPut()
+        d = new DefaultPut(r)
       when "DEL"
         fn = @__e.delete
-        d = new DefaultDel()
+        d = new DefaultDel(r)
       else
         console.error "Invalid HTTP Route #{routeDef.method} for #{routeDef.route}"
         return []

@@ -21,9 +21,8 @@ class CriscoModelFactory
       }
   ###
 
-  constructor: (appConfig, domainConfigs, database) ->
+  constructor: (appConfig, database) ->
     @__appConfig = appConfig
-    @__domainConfigs = domainConfigs
     @__database = database
     @__criscoModels = {}
 

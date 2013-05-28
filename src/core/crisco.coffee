@@ -79,8 +79,8 @@ class Crisco
               dbSettingsGetter
               )
 
-    app.init (err) =>
-      clbk err
+    app.init (err, express) =>
+      clbk err, express
 
 
   ###

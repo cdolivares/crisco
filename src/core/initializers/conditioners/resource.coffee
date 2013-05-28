@@ -16,7 +16,8 @@ class ResourceConditioner
 
   constructor: (database) ->
     @__db = database
-    @__resourceInit = new CriscoResourceInit(@__db)
+    @__resourceInit = new CriscoResourceInit(@__db, Crisco.appConfig)
+    @__resourceInit.init()
 
 
   ###

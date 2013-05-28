@@ -1,11 +1,29 @@
 class GET
+  ###
+      Where a route object is defined as:
+      {
+        tag: "routeTag"
+        route: "/route"
+        method: "GET|PUT|POST|DEL"
+        handler: RouteFn
+      }
+  ###
+  constructor: (r) ->
+    @__r = r
 
-  constructor: () ->
-    console.log "Initializing default GET"
+  handler: (req, res, next) =>
+    CriscoModel = req.__crisco.model
+    Aux = req.__crisco.aux
+    @__r.handler CriscoModel, Aux, (runDefault=false) =>
+      #require users to call this function and pass in some
+      #optional flag for 
+      if runDefault
+        console.log "Running default GET handler..."
+        @_default()
 
-  handler: () =>
+  _default: () =>
 
   @::__defineGetter__ 'route', () ->
-    "/api/resource/get"
+    @__r.route
 
 module.exports = GET
