@@ -38,4 +38,7 @@ class CriscoModel
   targets: () ->
     console.log "Populating Crisco Targets"
 
+  @::__defineGetter__ "database", () ->
+    return @__database
+
 module.exports = CriscoModel
