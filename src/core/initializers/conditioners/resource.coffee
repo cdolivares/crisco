@@ -16,6 +16,7 @@ class ResourceConditioner
 
   constructor: (database) ->
     @__db = database
+    @__resourceInit = new CriscoResourceInit(@__db)
 
 
   ###
@@ -26,7 +27,7 @@ class ResourceConditioner
     our crisco resource primitives
   ###
   get: (domain) ->
-    return []
+    return @__resourceInit.getExpressMiddleware(domain)
 
 
 module.exports = ResourceConditioner

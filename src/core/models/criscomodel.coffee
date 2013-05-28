@@ -12,6 +12,19 @@ class CriscoModel
     Method: constructor
 
     @param - domain <String>, The current
+    @param - database <Object>, and instance
+             of the dojo database object.
+    @param - routeInfo - an object containing
+             information about this specific
+             request
+             Includes:
+                  routeInfo =
+                    route:  "/a/route"
+                    method: "GET|POST|PUT|DELETE"
+                    query:  {queryString: Parameter}
+                    body:   {body: Parameter}
+             Query and/or body may not be defined
+             depending on the HTTP Method used
   ###
 
   constructor: (domain, database, routeInfo) ->

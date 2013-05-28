@@ -80,6 +80,7 @@ class Crisco
               )
 
     app.init (err) =>
+      clbk err
 
 
   ###

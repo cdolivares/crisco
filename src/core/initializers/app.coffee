@@ -69,7 +69,8 @@ class AppInitializer
                 clbk err
               else
                 console.log "Initializing resources..."
-                @__initializers.resource.init (err) =>
+                @__initializers.resource.enrich()
+                clbk err
 
 
 module.exports = AppInitializer

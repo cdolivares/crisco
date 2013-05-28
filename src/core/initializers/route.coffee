@@ -25,9 +25,8 @@ class RouteInitializer
     @__g.init()
     clbk()
 
-  enrich: () ->
+  enrich: (clbk) ->
     for name, confObj of @__g.get()
       @__c.add name, confObj.serialize()
-
 
 module.exports = RouteInitializer

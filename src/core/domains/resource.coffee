@@ -58,7 +58,7 @@ class ResourceDomain
   constructor: (express, config, conditioner) ->
     @__e = express
     @__c = config
-    @__c = conditioner
+    @__cond = conditioner
 
   enrich: () ->
     routeKeyedBefore = MWareTransformer.transform @__c.beforeHooks
@@ -69,8 +69,8 @@ class ResourceDomain
       [fn, routeHandler] = @_constructRouteHandler(r)
       clbk = (req, res) ->
       # Need to start the crisco chain with a Crisco route conditioner
-      args = @__c.get()
-                .concat([routeHandler.route])
+      args =  [routeHandler.route] 
+                .concat(@__cond.get(@__c.domain))
                 .concat(_.filter(_.map(beforeHooks, (n) => @__c.m[n]), (z) => _.isFunction(z))) #map to middleware defns and filter out undefined values
                 .concat([routeHandler.handler])
                 .concat(_.filter(_.map(afterHooks, (n) => @__c.m[n]), (z) => _.isFunction(z)))
