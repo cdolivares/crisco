@@ -43,4 +43,4 @@ exports.transform = (m) ->
         arr.push n
         keyed[str] = arr
 
-    return keyed
+  return keyed

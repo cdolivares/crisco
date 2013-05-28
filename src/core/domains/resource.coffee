@@ -67,6 +67,7 @@ class ResourceDomain
     @__cond = conditioner
 
   enrich: () ->
+    console.log @__c.beforeHooks
     routeKeyedBefore = MWareTransformer.transform @__c.beforeHooks
     routeKeyedAfter  = MWareTransformer.transform @__c.afterHooks
     for r in @__c.routes
