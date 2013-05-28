@@ -20,18 +20,18 @@ Middleware =
     -Call user registered deserializer
     if it exists.
   ###
-  '1': (req, res, next) ->
-    req.__crisco = {}
-    h = (me) ->
-      if me?
-        req.__crisco.me = me
-      next()
-    console.log
-    m = Crisco.getMiddleware "deserialize"
-    if m?
-      m.call(m, req, res, h)
-    else
-      next()
+  '1': (domain) ->
+    return (req, res, next) =>
+      req.__crisco = {}
+      h = (me) =>
+        if me?
+          req.__crisco.me = me
+        next()
+      m = Crisco.getMiddleware "deserialize"
+      if m?
+        m.call(m, req, res, @__db, h)
+      else
+        next()
 
   ###
     Step 2:
@@ -54,6 +54,7 @@ Middleware =
         res: res
         log: console.log
         error: console.error
+        me: req.__crisco.me
       req.__crisco.aux = aux
       next()
 
@@ -71,7 +72,7 @@ class CriscoResourceInit
 
   getExpressMiddleware: (domain) ->
     return [
-      Middleware['1'],
+      Middleware['1'](domain),
       Middleware['2'](domain)
     ]
 
