@@ -12,7 +12,7 @@ class CriscoWrapper
     return (req, res, next) =>
       CriscoModel = req.__crisco.model
       Aux = req.__crisco.aux
-      @__fn CriscoModel, Aux, () ->
+      @__fn CriscoModel, Aux, () =>
         console.log "Deferring to next middleware..."
         next()
 

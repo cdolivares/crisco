@@ -19,7 +19,8 @@
         "coffee-script": "1.4.0",
         "underscore": "1.4.2",
         "express": "3.2.4",
-        "database": "git+ssh://git@github.com:cdolivares/database#master"
+        "database": "git+ssh://git@github.com:cdolivares/database#master",
+        "async": "0.2.9"
     },
     "devDependencies": { 
         "mocha": "1.7.x",

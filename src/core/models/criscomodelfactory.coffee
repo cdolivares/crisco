@@ -32,7 +32,7 @@ class CriscoModelFactory
       init: (req) =>
         #extract route info here.
         routeInfo =
-          route:  req.route
+          route:  _.extend(req.route, {url: req.url})
           method: req.method
           query:  req.query
           body:   req.body
