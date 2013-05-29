@@ -1,6 +1,6 @@
 {
-    "name": "Crisco",
-    "description": "A slick framework",
+    "name": "crisco",
+    "description": "A slick framework built on expressjs",
     "version": "0.0.1",
     "private": true,
     "repository": {
@@ -18,7 +18,9 @@
     "dependencies": { 
         "coffee-script": "1.4.0",
         "underscore": "1.4.2",
-        "express": "3.2.4"
+        "express": "3.2.4",
+        "database": "git+ssh://git@github.com:cdolivares/database#master",
+        "async": "0.2.9"
     },
     "devDependencies": { 
         "mocha": "1.7.x",
