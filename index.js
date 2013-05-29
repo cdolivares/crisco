@@ -1,12 +1,20 @@
 (function (exports) {
-  var Crisco, BaseResource, BaseAction;
+  var Crisco,
+      BaseResource,
+      CriscoCore,
+      BaseAction;
 
-  exports = Crisco = function() {
+
+  CriscoCore = require("./lib/core/crisco");
+
+  exports = Crisco = function(config) {
     //initialize Crisco here.
+    crisco = new CriscoCore(config);
+    return crisco;
   }
 
-  BaseResource = require("./lib/core/baseresource");
-  BaseAction   = require("./lib/core/baseaction");
+  BaseResource = require("./lib/core/resource/base");
+  BaseAction   = require("./lib/core/actions/base");
 
   Crisco.BaseResource = function() {
     return BaseResource.clone();
@@ -14,5 +22,11 @@
   Crisco.BaseAction = function() {
     return BaseAction.clone();
   }
+
+  //global utils
+  //...but globals are terrible. -chris
+  _ = require("underscore");
+  _.trim = (s) ->
+    s.replace(/\s/g, "");
 
 })(exports);
