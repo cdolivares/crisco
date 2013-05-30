@@ -80,7 +80,7 @@ class BaseResource
       f._reset()
 
     f._reset = () ->
-      f._t = null
+      f.__vars._t = null
 
     f.serialize = () ->
       #serialization here
