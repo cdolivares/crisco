@@ -5,7 +5,7 @@
   and graph to the client.
 ###
 
-Database = require("database")
+Database = require("database").Database
 
 
 class SchemaInitializer
