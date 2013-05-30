@@ -17,14 +17,14 @@
   BaseResource = require("./lib/core/resource/base");
   BaseAction   = require("./lib/core/action/base");
 
-  Crisco.BaseResource = function() {
+  exports.BaseResource = function() {
     return BaseResource.clone();
   }
-  Crisco.BaseAction = function() {
+  exports.BaseAction = function() {
     return BaseAction.clone();
   }
 
-  Crisco.BaseSchema = Database.BaseSchema;
+  exports.BaseSchema = Database.BaseSchema;
 
   //global utils
   //...but globals are terrible. -chris

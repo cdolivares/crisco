@@ -4,6 +4,9 @@ Getter       = require("#{__dirname}/../helpers/getter")
 ApplicationInitializer =
     require("#{__dirname}/initializers/app")
 
+BaseSchema =
+    require("database").BaseSchema
+
 ###
   Default Middleware
 ###
@@ -84,13 +87,16 @@ class Crisco
 
 
   ###
-    Getters
+    Convenience Getters
   ###
   @::__defineGetter__ 'BaseAction', () ->
     return BaseAction.clone()
 
   @::__defineGetter__ 'BaseResource', () ->
     return BaseResource.clone()
+
+  @::__defineGetter__ 'BaseSchema', () ->
+    return BaseSchema
 
   @::__defineGetter__ 'appConfig', () ->
     return @__config
