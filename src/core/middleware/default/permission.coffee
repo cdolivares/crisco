@@ -6,6 +6,9 @@ module.exports = (CriscoModels, Aux, next) ->
     node = nodeManager.find target
     if node.isRoot
       return CriscoModels.populate (err, models) =>
+        t = models[n.name]
+        me = Aux.me
+        #check permissions here...
         next()
 
   console.error "Could not find a root for permissions please check route #{Aux.req.url}"

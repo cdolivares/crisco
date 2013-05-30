@@ -2,9 +2,11 @@
   var Crisco,
       BaseResource,
       CriscoCore,
-      BaseAction;
+      BaseAction,
+      Database;
 
   CriscoCore = require("./lib/core/crisco");
+  Database = require("database");
 
   exports.Crisco = Crisco = function(config) {
     //initialize Crisco here.
@@ -21,6 +23,8 @@
   Crisco.BaseAction = function() {
     return BaseAction.clone();
   }
+
+  Crisco.BaseSchema = Database.BaseSchema;
 
   //global utils
   //...but globals are terrible. -chris
