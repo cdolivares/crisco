@@ -1,16 +1,28 @@
 module.exports = (CriscoModels, Aux, next) ->
   console.log "Running Permission Middleware"
+  deny = () ->
+    Aux.res.json 401, {message: "Not Authorized"}
   targets = CriscoModels.targets()
   nodeManager = CriscoModels.database.nodeManager
   for target in targets
     node = nodeManager.find target
     if node.isRoot
-      return CriscoModels.populate (err, models) =>
-        t = models[n.name]
+      return CriscoModels.populate (err, models) ->
+        t = models[node.name]
         me = Aux.me
         #check permissions here...
-        next()
+        v = Crisco.getMiddleware "verify:permission"
+        if not v?
+          console.error "-------------------------"
+          console.error "No permission verification handler registered:"
+          console.error "    -url: #{Axu.req.url}"
+          console.error "-------------------------"
+          return deny()
+        v Aux.req.method, t, me, (auth) ->
+          if auth
+            next()
+          else
+            deny()
 
   console.error "Could not find a root for permissions please check route #{Aux.req.url}"
-  #respond with a 401
-  Aux.res.json 401, {message: "Not authorized"}
+  deny()
