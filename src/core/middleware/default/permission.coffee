@@ -8,7 +8,8 @@ module.exports = (CriscoModels, Aux, next) ->
     node = nodeManager.find target
     if node.isRoot
       return CriscoModels.populate (err, models) ->
-        t = models[node.name]
+        #alternateName is lowercased plural
+        t = models[node.alternateName]
         me = Aux.me
         #check permissions here...
         v = Crisco.getMiddleware "verify:permission"

@@ -25,6 +25,7 @@
   }
 
   exports.BaseSchema = Database.BaseSchema;
+  exports.Permission = Database.Permission;
 
   //global utils
   //...but globals are terrible. -chris
