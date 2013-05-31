@@ -18,7 +18,12 @@ module.exports = (CriscoModels, Aux, next) ->
           console.error "    -url: #{Axu.req.url}"
           console.error "-------------------------"
           return deny()
-        v Aux.req.method, t, me, (auth) ->
+        o =
+          type: Aux.req.method
+          actor: me
+          target: t
+          database: CriscoModels.database
+        v o, (auth) ->
           if auth
             next()
           else
