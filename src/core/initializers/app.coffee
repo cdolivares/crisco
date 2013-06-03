@@ -49,6 +49,13 @@ class AppInitializer
       else
         db = @__initializers.schema.database
 
+        ###
+          Server configuration needs reference to database.
+          Pass in here.
+        ###
+        if Crisco.configuration["server"]?
+          Crisco.configuration["server"] @__e, db
+
         resourceConditioner = new ResourceConditioner(db)
         actionConditioner = new ActionConditioner(db)
 

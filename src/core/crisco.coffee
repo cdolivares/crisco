@@ -33,6 +33,7 @@ class Crisco
   constructor: (config) ->
     @__config = config
     @__customMiddleware = {}
+    @__configCallbacks = {}
 
     #let's export crisco into the Global Namespace for
     #visibility in Resource and Action Controllers
@@ -52,6 +53,18 @@ class Crisco
     #register with Action and Resources
     BaseAction.register name, middleware
     BaseResource.register name, middleware
+
+  ###
+    Method: configure
+
+    A configure hook that allows the client to configure
+    different parts of the application initialization
+    process.
+
+    For now, the only configuration type is "server"
+  ###
+  configure: (type, clbk) ->
+    @__configCallbacks[type] = clbk
 
   getMiddleware: (name) ->
     @__customMiddleware[name]
@@ -100,6 +113,9 @@ class Crisco
 
   @::__defineGetter__ 'appConfig', () ->
     return @__config
+
+  @::__defineGetter__ 'configuration', () ->
+    return @__configCallbacks
 
 
 module.exports = Crisco
