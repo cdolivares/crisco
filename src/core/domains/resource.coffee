@@ -4,19 +4,19 @@
 ###
 
 DefaultGet  =
-    require("#{__dirname}/defaults/resource/get")
+    require("#{__dirname}/../domains.default/resource/get")
 DefaultPut  =
-    require("#{__dirname}/defaults/resource/put")
+    require("#{__dirname}/../domains.default/resource/put")
 DefaultPost =
-    require("#{__dirname}/defaults/resource/post")
+    require("#{__dirname}/../domains.default/resource/post")
 DefaultDel  =
-    require("#{__dirname}/defaults/resource/del")
+    require("#{__dirname}/../domains.default/resource/del")
 
 ###
   Crisco Middleware Wrapper
 ###
 MiddlewareWrapper =
-    require("#{__dirname}/../middleware/default/crisco_wrapper")
+    require("#{__dirname}/../middleware/criscowrapper")
 
 ###
   Helpers
@@ -43,7 +43,9 @@ class ResourceDomain
              resource domain.
              See resource/base for more information.
     @param - database - An instance of dojodatabase
-             that provides some basic
+             that provides access to the application
+             datastore as well as convenience methods
+             for extracting our model dependencies.
       {
         domain: "resourceDomain Name",
         beforeHooks: {"hookName": "opts"},

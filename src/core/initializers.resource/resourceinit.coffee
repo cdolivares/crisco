@@ -1,8 +1,10 @@
 CriscoResourceInit =
-    require("#{__dirname}/../../middleware/default/crisco_resource_init")
+    require("#{__dirname}/../middleware.action/init")
 
+
+## TODO(chris) - Swap out for new PrimitiveFactor
 CriscoModels =
-    require("#{__dirname}/../../models/criscomodelfactory")
+    require("#{__dirname}/../models/criscomodelfactory")
 
 ###
   Class: ResourceConditioner

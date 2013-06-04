@@ -11,9 +11,9 @@ BaseSchema =
   Default Middleware
 ###
 PermissionMiddleware =
-    require("#{__dirname}/middleware/default/permission")
+    require("#{__dirname}/middleware.default/permission")
 AuthenticationMiddleware =
-    require("#{__dirname}/middleware/default/authentication")
+    require("#{__dirname}/middleware.default/authentication")
 
 ###
   Class: Crisco

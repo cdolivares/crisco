@@ -11,13 +11,13 @@ Database = require("database").Database
 class SchemaInitializer
 
   constructor: (schemaGetter, pluginGetter, dbSettingsGetter) ->
-    @_sGetter          = schemaGetter
-    @_pGetter          = pluginGetter
-    @_dbSettingsGetter = dbSettingsGetter
+    @__sGetter          = schemaGetter
+    @__pGetter          = pluginGetter
+    @__dbSettingsGetter = dbSettingsGetter
 
   init: (clbk) ->
-    _plugins = @_pGetter.get()
-    _db = new Database(@_sGetter.path, @_dbSettingsGetter.path).init()
+    _plugins = @__pGetter.get()
+    _db = new Database(@__sGetter.path, @__dbSettingsGetter.path).init()
 
     for pluginName, plugin of _plugins
       _db.registerPlugin pluginName, plugin
@@ -27,10 +27,10 @@ class SchemaInitializer
         console.error "Some error handler here"
         clbk(err)
       else
-        @_criscoDatabase = criscoDatabase
+        @__criscoDatabase = criscoDatabase
         clbk(null)
 
   @::__defineGetter__ 'database', () ->
-    return @_criscoDatabase
+    return @__criscoDatabase
 
 module.exports = SchemaInitializer

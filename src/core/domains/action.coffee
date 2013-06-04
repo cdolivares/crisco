@@ -8,6 +8,12 @@
 
 class ActionDomain
 
+  ###
+    Method: constructor
+
+    @param express -
+  ###
+
   constructor: (express, config, database) ->
     @__e = express
     @__c = config

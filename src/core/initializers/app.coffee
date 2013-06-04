@@ -16,9 +16,9 @@ ResourceCollector = require("#{__dirname}/../collectors/resource")
   Route Conditioners
 ###
 ResourceConditioner =
-    require("#{__dirname}/conditioners/resource")
+    require("#{__dirname}/../initializers.resource/resourceinit")
 ActionConditioner   =
-    require ("#{__dirname}/conditioners/action")
+    require ("#{__dirname}/../initializers.action/actioninit")
 
 
 class AppInitializer

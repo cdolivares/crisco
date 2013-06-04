@@ -3,7 +3,8 @@
   steps of Crisco initialization.
 ###
 
-CriscoModels = require("#{__dirname}/../../models/criscomodelfactory")
+## TODO(chris)! Replace with new PrimitiveFactory
+CriscoModels = require("#{__dirname}/../models/criscomodelfactory")
 
 ###
  Let's just define the ordered middleware here. Bind each
