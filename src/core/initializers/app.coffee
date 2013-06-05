@@ -98,7 +98,7 @@ class AppInitializer
               else
                 console.log "Initializing resources..."
                 @__initializers.route.resource.enrich()
-                # @__initializers.action.enrich()
+                @__initializers.route.action.enrich()
                 clbk null, @__e
 
   ###

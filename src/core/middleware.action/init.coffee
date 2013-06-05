@@ -1,3 +1,56 @@
+###
+  A collection of the first N
+  steps of Crisco initialization.
+###
+
+###
+ Let's just define the ordered middleware here. Bind each
+ anonymous function to this context so it get's access to
+ the instance variables.
+###
+
+Middleware =
+  ###
+    Step 1:
+
+    -Create a namespaced __crisco variable
+    container on the express req object.
+
+    -Call user registered deserializer
+    if it exists.
+  ###
+  '1': (domain) ->
+    return (req, res, next) =>
+      req.__crisco = {}
+      h = (me) =>
+        if me?
+          req.__crisco.me = me
+        next()
+      m = Crisco.getMiddleware "deserialize"
+      if m?
+        m.call(m, req, res, @__database, h)
+      else
+        next()
+
+  ###
+    Step 2:
+
+    -Create CriscoModel and Aux
+    instances
+
+  # TODO(chris): Might need to curry with
+    domainConfig if CriscoModel needs
+    domain configurable options to bootstrap
+    itself.
+  ###
+  '2': (domain) ->
+    return (req, res, next) =>
+      ca = @__primitiveFactory.getPrimitive "CriscoAction", domain, req, res
+      aux = @__primitiveFactory.getPrimitive "CriscoAux", domain, req, res
+      req.__crisco.action = ca
+      req.__crisco.aux   = aux
+      next()
+
 
 ###
   Class: CriscoActionInit
@@ -8,11 +61,18 @@
 ###
 class CriscoActionInit
 
-  constructor: () ->
+  constructor: (database, primitiveFactory) ->
+    @__database         = database
+    @__primitiveFactory = primitiveFactory
 
   init: () ->
+    for step, route of Middleware
+      Middleware[step] = route.bind(@)
 
   getExpressMiddleware: (domain) ->
-    return []
+    return [
+      Middleware['1'](domain),
+      Middleware['2'](domain)
+    ]
 
 module.exports = CriscoActionInit

@@ -33,8 +33,13 @@ class BaseAction
     f.domain = (d) ->
       @_d = d
 
-    f.app.action = (route, actionHandler) ->
-      console.log "Action !", route
+    f.app.post = (route, actionHandler) ->
+      f._routes.push
+        tag: f.__vars.t
+        route: route
+        method: "POST"
+        handler: actionHandler
+      f._reset()
 
     f._reset = () ->
       @__vars.t = null

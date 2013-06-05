@@ -3,12 +3,10 @@
   steps of Crisco initialization.
 ###
 
-## TODO(chris)! Replace with new PrimitiveFactory
-CriscoModels = require("#{__dirname}/../models/criscomodelfactory")
-
 ###
  Let's just define the ordered middleware here. Bind each
- anonymous function to this context so it get's access
+ anonymous function to this context so it get's access to
+ the instance variables.
 ###
 
 Middleware =
@@ -30,7 +28,7 @@ Middleware =
         next()
       m = Crisco.getMiddleware "deserialize"
       if m?
-        m.call(m, req, res, @__db, h)
+        m.call(m, req, res, @__database, h)
       else
         next()
 
@@ -47,31 +45,22 @@ Middleware =
   ###
   '2': (domain) ->
     return (req, res, next) =>
-      console.log "Initializing Crisco Models Primitives"
-      cm = @__CriscoModels.get(domain)
-      req.__crisco.model = cm.init(req)
-      aux = #simplified aux object for now.
-        req: req
-        res: res
-        log: console.log
-        error: console.error
-        me: req.__crisco.me
-      req.__crisco.aux = aux
+      cm = @__primitiveFactory.getPrimitive "CriscoModel", domain, req, res
+      aux = @__primitiveFactory.getPrimitive "CriscoAux", domain, req, res
+      req.__crisco.model = cm
+      req.__crisco.aux   = aux
       next()
 
 class CriscoResourceInit
 
   constructor: (database, primitiveFactory) ->
     appConfig = {}
-    @__db = database
-    @__CriscoModels = new CriscoModels appConfig, @__db
+    @__database = database
     @__primitiveFactory = primitiveFactory
 
   init: () ->
-    #let's bind each middleware to THIS instance
     for step, route of Middleware
       Middleware[step] = route.bind(@)
-    # clbk null
 
   getExpressMiddleware: (domain) ->
     return [

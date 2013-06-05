@@ -42,10 +42,10 @@ class ResourceDomain
     @param - config - An object describing a 
              resource domain.
              See resource/base for more information.
-    @param - database - An instance of dojodatabase
-             that provides access to the application
-             datastore as well as convenience methods
-             for extracting our model dependencies.
+    @param - resourceInitializer - A Getter class
+             that returns an array of express compliant
+             middleware that initializes our Crisco
+             primitives.
       {
         domain: "resourceDomain Name",
         beforeHooks: {"hookName": "opts"},
@@ -75,7 +75,7 @@ class ResourceDomain
       beforeHooks = routeKeyedBefore[r.tag] || routeKeyedBefore["default"]
       afterHooks = routeKeyedAfter[r.tag] || routeKeyedAfter["default"]
       [fn, routeHandler] = @_constructRouteHandler(r)
-      clbk = (req, res) ->
+      clbk = (req, res, next) ->
       # Need to start the crisco chain with a Crisco route conditioner
       beforeHooks = _.filter(_.map(beforeHooks, (n) => @__c.m[n]), (z) => _.isFunction(z))
       afterHooks = _.filter(_.map(afterHooks, (n) => @__c.m[n]), (z) => _.isFunction(z))
