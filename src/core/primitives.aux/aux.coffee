@@ -141,5 +141,12 @@ class CriscoAux
   @::__defineGetter__ "res", () ->
     @__routeInfo.res
 
+  @::__defineGetter__ "me", () ->
+    if not @__routeInfo.req.__crisco?
+      console.log "NOOO CRISCO!"
+      return null
+    else
+      @__routeInfo.req.__crisco.me
+
 
 module.exports = CriscoAux

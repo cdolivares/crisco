@@ -10,6 +10,9 @@ MiddlewareWrapper =
 MWareTransformer =
     require("#{__dirname}/../../helpers/middleware")
 
+DefaultAction =
+    require("#{__dirname}/../domains.default/action/action")
+
 
 ###
   Class: ActionDomain
@@ -61,6 +64,7 @@ class ActionDomain
       beforeHooks = routeKeyedBefore[r.tag] || routeKeyedBefore["default"]
       afterHooks = routeKeyedAfter[r.tag] || routeKeyedAfter["default"]
       fn = @_constructRouteHandler(r)
+      defaultAction = new DefaultAction(r)
       clbk = (req, res, next) ->
       # Need to start the crisco chain with a Crisco route conditioner
       beforeHooks = _.filter(_.map(beforeHooks, (n) => @__c.m[n]), (z) => _.isFunction(z))
@@ -75,10 +79,10 @@ class ActionDomain
             z = new MiddlewareWrapper(ah)
             return z.handler()
           )
-      args =  [r.route] 
+      args =  [defaultAction.route] 
                 .concat(@__aInit.get(@__c.domain))
                 .concat(wrappedBeforeHooks) #map to middleware defns and filter out undefined values
-                .concat([r.handler])
+                .concat([defaultAction.handler])
                 .concat(wrappedAfterHooks)
                 .concat([clbk])
       fn.apply(@__e, args)
