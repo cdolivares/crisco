@@ -1,24 +1,25 @@
 CriscoResourceInit =
-    require("#{__dirname}/../middleware.action/init")
+    require("#{__dirname}/../middleware.resource/init")
 
-
-## TODO(chris) - Swap out for new PrimitiveFactor
-CriscoModels =
-    require("#{__dirname}/../models/criscomodelfactory")
 
 ###
-  Class: ResourceConditioner
+  Class: ResourceInitializer
 
   Initializes a set of express compliant middleware that
   takes the raw request object and creates the Crisco
-  route primitives CriscoModels and Aux 
+  route primitives CriscoModels and Aux
+
+  @param - database - An instance of database
+  @param - primitiveFactory - An instance of primitiveFactory
+           that can initialize application primitives such
+           as CriscoModel, CriscoAction, and Aux
 ###
 
-class ResourceConditioner
+class ResourceInitializer
 
-  constructor: (database) ->
+  constructor: (database, primitiveFactory) ->
     @__db = database
-    @__resourceInit = new CriscoResourceInit(@__db, Crisco.appConfig)
+    @__resourceInit = new CriscoResourceInit(@__db, primitiveFactory)
     @__resourceInit.init()
 
 
@@ -33,4 +34,4 @@ class ResourceConditioner
     return @__resourceInit.getExpressMiddleware(domain)
 
 
-module.exports = ResourceConditioner
+module.exports = ResourceInitializer

@@ -1,11 +1,25 @@
 ###
   Class: Primitive Factory
 
-  Handles initializing new Crisco Primitives.
+  Handles initializing new Crisco Primitives:
+    -CriscoModel
+    -CriscoAction
+    -Aux
 ###
 
 
 class PrimitiveFactory
+
+  ###
+    Method: constructor
+
+    @param - appConfig - Application level configurations
+             defined on Crisco.
+    @param - domainConfig - An object containing all the
+             serialized action and resource domain
+             configurations
+    @param - database - instance of database
+  ###
 
   constructor: (appConfig, domainConfig, database) ->
     @__configs =

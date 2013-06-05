@@ -61,9 +61,11 @@ Middleware =
 
 class CriscoResourceInit
 
-  constructor: (database, appConfig) ->
+  constructor: (database, primitiveFactory) ->
+    appConfig = {}
     @__db = database
     @__CriscoModels = new CriscoModels appConfig, @__db
+    @__primitiveFactory = primitiveFactory
 
   init: () ->
     #let's bind each middleware to THIS instance

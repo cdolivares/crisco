@@ -139,4 +139,5 @@ class CriscoAction
 
   @::__defineGetter__ "res", () ->
     @__routeInfo.res
-model.exports = CriscoAction
+
+module.exports = CriscoAction

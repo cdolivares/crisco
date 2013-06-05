@@ -11,15 +11,17 @@ ResourceDomain = require("#{__dirname}/../domains/resource")
 
 class ResourceCollector
 
-  constructor: (express, conditioner) ->
+  constructor: (express, resourceInitializer) ->
     @__e = express
-    @__cond = conditioner
+    @__r = resourceInitializer
     @__resources = {}
 
   ###
     Method: add
     
-    Adds a resourceDomain to the ResourceDomain collection.
+    Adds a resourceDomain to the ResourceDomain collection. This
+    also initializes the server instance with this resource
+    domain
     
     @param "string" that's the name of this particular domain
     @param "object" describing the state of the resource domain
@@ -27,7 +29,7 @@ class ResourceCollector
 
   add: (name, config) ->
     #inject domain handlers with the conditioner.
-    rd = new ResourceDomain(@__e, config, @__cond)
+    rd = new ResourceDomain(@__e, config, @__r)
     rd.enrich()
     @__resources[name] = rd
 

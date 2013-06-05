@@ -1,11 +1,12 @@
 CriscoActionInit =
     require("#{__dirname}/../middleware.action/init")
 
-class ActionConditioner
+class ActionInitializer
 
-  constructor: (database) ->
+  constructor: (database, primitiveFactory) ->
     @__db = database
-    @__actionInit = new CriscoActionInit(@__db)
+    @__primitiveFactory = primitiveFactory
+    @__actionInit = new CriscoActionInit(@__db, primitiveFactory)
     @__actionInit.init()
 
 
@@ -20,4 +21,4 @@ class ActionConditioner
   get: () ->
     return @__actionInit.getExpressMiddleware()
 
-module.exports = ActionConditioner
+module.exports = ActionInitializer

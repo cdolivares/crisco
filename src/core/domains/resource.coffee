@@ -63,10 +63,10 @@ class ResourceDomain
       }
   ###
 
-  constructor: (express, config, conditioner) ->
+  constructor: (express, config, resourceInitializer) ->
     @__e = express
     @__c = config
-    @__cond = conditioner
+    @__rInit = resourceInitializer
 
   enrich: () ->
     routeKeyedBefore = MWareTransformer.transform @__c.beforeHooks
@@ -90,7 +90,7 @@ class ResourceDomain
             return z.handler()
           )
       args =  [routeHandler.route] 
-                .concat(@__cond.get(@__c.domain))
+                .concat(@__rInit.get(@__c.domain))
                 .concat(wrappedBeforeHooks) #map to middleware defns and filter out undefined values
                 .concat([routeHandler.handler])
                 .concat(wrappedAfterHooks)
