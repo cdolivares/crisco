@@ -33,6 +33,11 @@ class GET
   ###
 
   _default: (CriscoModel, Aux, next) =>
+    #defer this to the client!
+    clientClbk = Crisco.getMiddleware("resource:default:get")
+    if not clientClbk?
+      Aux.error "No default get logic supplied by client. Skipping..."
+      return next()
     rootNode = CriscoModel.getRoot()
     p = CriscoModel.getParam(rootNode.alternateName)
     #let's find the root node and use that as the starting point.
@@ -44,11 +49,15 @@ class GET
         arr = CriscoModel.targets().reverse()
         nArr = arr.slice(arr.indexOf(rootNode.alternateName))
         find = (memo, collItem, callback) =>
-          node = CriscoModel.find(collItem)
-          id = CriscoModel.getParam(collItem)
-          CriscoModel.database.drivers.findById id
+          targets = memo.unshift()
+          clbk = (err, docs) ->
+            if err?
+              callback err, null
+            else
+              callback null, memo.push(docs)
+          clientClbk.call(clientClbk, CriscoModel, Aux, targets, collItem, clbk)
         async.reduce nArr, [result], find, (err, result) ->
-          #TODO: Finish this...
+          Aux.res.send 200, {data: result}
 
   @::__defineGetter__ 'route', () ->
     @__r.route
