@@ -1,6 +1,9 @@
 
 REPORTER = dot
 
+clean:
+	rm -rf ./lib
+
 build:
 	@coffee --compile --output lib/ src/
 
