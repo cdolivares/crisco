@@ -60,6 +60,15 @@ class Crisco
     BaseResource.register name, middleware
 
   ###
+  ###
+
+  options: (config) ->
+    if not arguments.length
+      return @__config 
+
+    @__config = config
+
+  ###
     Method: configure
 
     A configure hook that allows the client to configure
@@ -76,11 +85,12 @@ class Crisco
 
   start: (clbk) ->
     config           = @__config
-    schemasGetter    = new Getter(config.schemaPath)
-    resourceGetter   = new Getter(config.resourcePath)
-    pluginGetter     = new Getter(config.pluginPath)
-    dbSettingsGetter = new Getter(config.dbSettingsPath)
-    actionsGetter    = new Getter(config.actionsPath)
+
+    schemas    = config.schemas or require(config.schemaPath)
+    plugins    = config.plugins or (new Getter(config.pluginPath)).get()
+    dbSettings = config.dbSettings or require(config.dbSettingsPath)
+    resources  = config.resources or (new Getter(config.resourcePath)).get()
+    actions    = config.actions or (new Getter(config.actionsPath)).get()
 
     ###
       Register Default Middleware
@@ -93,11 +103,11 @@ class Crisco
 
     # #Initialization a bit verbose here...let's cleanup
     app = new ApplicationInitializer(
-              actionsGetter,
-              resourceGetter,
-              schemasGetter,
-              pluginGetter,
-              dbSettingsGetter
+              actions,
+              resources,
+              schemas,
+              plugins,
+              dbSettings
               )
 
     app.init (err, express) =>

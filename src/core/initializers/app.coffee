@@ -43,15 +43,12 @@ class AppInitializer
 
 
   ###
-  constructor: (actionsG, resourcesG, schemasG, pluginsG, dbSettingsG) ->
-    @__s = schemasG
-    @__r = resourcesG
-    @__p = pluginsG
-    @__a = actionsG
-    @__dbSettings = dbSettingsG
+  constructor: (@__a, @__r, @__s, @__p, @__dbSettings) ->
+
     @__initializers =
       route     : {}
-    @__e = Express()
+
+    @__e = Express() 
 
   init: (clbk) ->
 
@@ -111,11 +108,10 @@ class AppInitializer
     domainConfigs =
       resource  : {}
       action    : {}
-    @__r.init()
-    @__a.init()
-    for n, r of @__r.get()
+    
+    for n, r of @__r
       domainConfigs.resource[n] = r.serialize()
-    for n, a of @__a.get()
+    for n, a of @__a
       domainConfigs.action[n] = a.serialize()
 
     primitiveFactory = new PrimitiveFactory(Crisco.appConfig, domainConfigs, @__database)
