@@ -15,11 +15,26 @@ ResourceCollector = require("#{__dirname}/../collectors/resource")
 ###
   Route Conditioners
 ###
-ResourceConditioner =
-    require("#{__dirname}/conditioners/resource")
-ActionConditioner   =
-    require ("#{__dirname}/conditioners/action")
+ResourceInitializer =
+    require("#{__dirname}/../initializers.resource/resourceinit")
+ActionInitializer   =
+    require ("#{__dirname}/../initializers.action/actioninit")
 
+###
+  Primitive Factory
+###
+PrimitiveFactory =
+    require("#{__dirname}/../primitives/primitivefactory")
+
+###
+  Primitive Implementations
+###
+CriscoModel =
+    require("#{__dirname}/../primitives.model/model")
+CriscoAction =
+    require("#{__dirname}/../primitives.action/action")
+CriscoAux =
+    require("#{__dirname}/../primitives.aux/aux")
 
 class AppInitializer
 
@@ -34,7 +49,8 @@ class AppInitializer
     @__p = pluginsG
     @__a = actionsG
     @__dbSettings = dbSettingsG
-    @__initializers = {}
+    @__initializers =
+      route     : {}
     @__e = Express()
 
   init: (clbk) ->
@@ -47,31 +63,74 @@ class AppInitializer
         console.error "Problem initializing the database"
         console.error err.message
       else
-        db = @__initializers.schema.database
+        @__database = db = @__initializers.schema.database
 
-        resourceConditioner = new ResourceConditioner(db)
-        actionConditioner = new ActionConditioner(db)
+        ###
+          Server configuration needs reference to database.
+          Pass in here.
+        ###
+        if Crisco.configuration["server"]?
+          Crisco.configuration["server"] @__e, db
 
-        resourceCollector = new ResourceCollector(@__e, resourceConditioner)
-        actionCollector = new ActionCollector(@__e, resourceConditioner)
+        primitiveFactory = @_initializePrimitiveFactory()
 
-        @__initializers.resource =
+        @__initializers.resource = resourceInitializer =
+            new ResourceInitializer(db, primitiveFactory)
+        @__initializers.action = actionInitializer =
+            new ActionInitializer(db, primitiveFactory)
+
+
+        resourceCollector = new ResourceCollector(@__e, resourceInitializer)
+        actionCollector = new ActionCollector(@__e, actionInitializer)
+
+        @__initializers.route.resource =
             new RouteInitializer(@__r, resourceCollector)
-        @__initializers.action   =
+        @__initializers.route.action   =
             new RouteInitializer(@__a, actionCollector)
 
-        @__initializers.resource.init (err) =>
+        @__initializers.route.resource.init (err) =>
           if err?
             clbk err
           else
-            @__initializers.action.init (err) =>
+            @__initializers.route.action.init (err) =>
               if err?
                 clbk err
               else
                 console.log "Initializing resources..."
-                @__initializers.resource.enrich()
-                # @__initializers.action.enrich()
+                @__initializers.route.resource.enrich()
+                @__initializers.route.action.enrich()
                 clbk null, @__e
+
+  ###
+    Private Method: _initializePrimitiveFactory
+  ###
+  _initializePrimitiveFactory: () ->
+    #first need to construct the action and route configs
+    #This is the first place the configurations are read
+    #in.
+    domainConfigs =
+      resource  : {}
+      action    : {}
+    @__r.init()
+    @__a.init()
+    for n, r of @__r.get()
+      domainConfigs.resource[n] = r.serialize()
+    for n, a of @__a.get()
+      domainConfigs.action[n] = a.serialize()
+
+    primitiveFactory = new PrimitiveFactory(Crisco.appConfig, domainConfigs, @__database)
+
+    primitiveFactory.registerPrimitive "CriscoModel", CriscoModel
+    primitiveFactory.registerPrimitive "CriscoAction", CriscoAction
+    primitiveFactory.registerPrimitive "CriscoAux", CriscoAux
+    return primitiveFactory
+
+
+
+    @__g.init()
+    #let's also construct serialized configs.
+    for n, c of @__g.get()
+      @__serializedConfigs[n] = c.serialize()
 
 
 module.exports = AppInitializer

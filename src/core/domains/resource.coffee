@@ -4,19 +4,19 @@
 ###
 
 DefaultGet  =
-    require("#{__dirname}/defaults/resource/get")
+    require("#{__dirname}/../domains.default/resource/get")
 DefaultPut  =
-    require("#{__dirname}/defaults/resource/put")
+    require("#{__dirname}/../domains.default/resource/put")
 DefaultPost =
-    require("#{__dirname}/defaults/resource/post")
+    require("#{__dirname}/../domains.default/resource/post")
 DefaultDel  =
-    require("#{__dirname}/defaults/resource/del")
+    require("#{__dirname}/../domains.default/resource/del")
 
 ###
   Crisco Middleware Wrapper
 ###
 MiddlewareWrapper =
-    require("#{__dirname}/../middleware/default/crisco_wrapper")
+    require("#{__dirname}/../middleware/criscowrapper")
 
 ###
   Helpers
@@ -42,8 +42,10 @@ class ResourceDomain
     @param - config - An object describing a 
              resource domain.
              See resource/base for more information.
-    @param - database - An instance of dojodatabase
-             that provides some basic
+    @param - resourceInitializer - A Getter class
+             that returns an array of express compliant
+             middleware that initializes our Crisco
+             primitives.
       {
         domain: "resourceDomain Name",
         beforeHooks: {"hookName": "opts"},
@@ -61,10 +63,10 @@ class ResourceDomain
       }
   ###
 
-  constructor: (express, config, conditioner) ->
+  constructor: (express, config, resourceInitializer) ->
     @__e = express
     @__c = config
-    @__cond = conditioner
+    @__rInit = resourceInitializer
 
   enrich: () ->
     routeKeyedBefore = MWareTransformer.transform @__c.beforeHooks
@@ -73,7 +75,7 @@ class ResourceDomain
       beforeHooks = routeKeyedBefore[r.tag] || routeKeyedBefore["default"]
       afterHooks = routeKeyedAfter[r.tag] || routeKeyedAfter["default"]
       [fn, routeHandler] = @_constructRouteHandler(r)
-      clbk = (req, res) ->
+      clbk = (req, res, next) ->
       # Need to start the crisco chain with a Crisco route conditioner
       beforeHooks = _.filter(_.map(beforeHooks, (n) => @__c.m[n]), (z) => _.isFunction(z))
       afterHooks = _.filter(_.map(afterHooks, (n) => @__c.m[n]), (z) => _.isFunction(z))
@@ -88,7 +90,7 @@ class ResourceDomain
             return z.handler()
           )
       args =  [routeHandler.route] 
-                .concat(@__cond.get(@__c.domain))
+                .concat(@__rInit.get(@__c.domain))
                 .concat(wrappedBeforeHooks) #map to middleware defns and filter out undefined values
                 .concat([routeHandler.handler])
                 .concat(wrappedAfterHooks)

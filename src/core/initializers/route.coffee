@@ -1,7 +1,11 @@
 ###
-  Class: AssetInitializer
+  Class: RouteInitializer
 
-  Initializes Action
+  Responsible for readying in
+  application configuration
+  files. Currently, this means
+  Resource and Action definition
+  files.
 ###
 
 class RouteInitializer
@@ -10,23 +14,41 @@ class RouteInitializer
     Method: constructor
 
     @param - getter - initializes
-    @param - collector - a collector that initializes
-             the application with serialized route instances
-    @param - conditioner - a request conditioner that knows
-             how to transform the raw request express object
-             into crisco route primitives
+    @param - collector - a request collector that knows
+             how to add serialized configuration objects
+             to the target server, in this case Express.
              
   ###
   constructor: (getter, collector) ->
     @__g = getter
     @__c = collector
+    @__serializedConfigs = {}
+
+
+  ###
+    Method: init
+
+    Initializes the getter which, in turn, requires
+    the loaded file or file dir. In this case that means
+
+  ###
 
   init: (clbk) ->
     @__g.init()
+    #let's also construct serialized configs.
+    for n, c of @__g.get()
+      @__serializedConfigs[n] = c.serialize()
     clbk()
 
   enrich: (clbk) ->
     for name, confObj of @__g.get()
       @__c.add name, confObj.serialize()
+
+  ###
+    Getter Configs
+  ###
+
+  @::__defineGetter__ "serializedConfigs", () ->
+    @__serializedConfigs
 
 module.exports = RouteInitializer
