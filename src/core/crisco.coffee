@@ -16,6 +16,11 @@ AuthenticationMiddleware =
     require("#{__dirname}/middleware.default/authentication")
 
 ###
+  Make default Database Permission object available
+###
+Permission = require("database").Permission
+
+###
   Class: Crisco
 
   Application class that exports application level functions.
@@ -116,6 +121,9 @@ class Crisco
 
   @::__defineGetter__ 'configuration', () ->
     return @__configCallbacks
+
+  @::__defineGetter__ "Permission", () ->
+    Permission
 
 
 module.exports = Crisco

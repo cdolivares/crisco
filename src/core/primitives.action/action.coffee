@@ -126,6 +126,12 @@ class CriscoAction
     Getters
   ###
 
+  @::__defineGetter__ "database", () ->
+    @__database
+
+  @::__defineGetter__ "body", () ->
+    @__routeInfo.req.body
+
   ###
     req - An untouched Express.js req object.
   ###
