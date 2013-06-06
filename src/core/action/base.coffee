@@ -34,7 +34,6 @@ class BaseAction
       @_d = d
 
     f.app.post = (route, actionHandler) ->
-      console.log "BASE! ", f.utils._prefixRoute(route)
       f._routes.push
         tag: f.__vars.t
         route: f.utils._prefixRoute(route)
