@@ -4,13 +4,21 @@ Getter       = require("#{__dirname}/../helpers/getter")
 ApplicationInitializer =
     require("#{__dirname}/initializers/app")
 
+BaseSchema =
+    require("database").BaseSchema
+
 ###
   Default Middleware
 ###
 PermissionMiddleware =
-    require("#{__dirname}/middleware/default/permission")
+    require("#{__dirname}/middleware.default/permission")
 AuthenticationMiddleware =
-    require("#{__dirname}/middleware/default/authentication")
+    require("#{__dirname}/middleware.default/authentication")
+
+###
+  Make default Database Permission object available
+###
+Permission = require("database").Permission
 
 ###
   Class: Crisco
@@ -30,6 +38,7 @@ class Crisco
   constructor: (config) ->
     @__config = config
     @__customMiddleware = {}
+    @__configCallbacks = {}
 
     #let's export crisco into the Global Namespace for
     #visibility in Resource and Action Controllers
@@ -49,6 +58,18 @@ class Crisco
     #register with Action and Resources
     BaseAction.register name, middleware
     BaseResource.register name, middleware
+
+  ###
+    Method: configure
+
+    A configure hook that allows the client to configure
+    different parts of the application initialization
+    process.
+
+    For now, the only configuration type is "server"
+  ###
+  configure: (type, clbk) ->
+    @__configCallbacks[type] = clbk
 
   getMiddleware: (name) ->
     @__customMiddleware[name]
@@ -84,7 +105,7 @@ class Crisco
 
 
   ###
-    Getters
+    Convenience Getters
   ###
   @::__defineGetter__ 'BaseAction', () ->
     return BaseAction.clone()
@@ -92,8 +113,17 @@ class Crisco
   @::__defineGetter__ 'BaseResource', () ->
     return BaseResource.clone()
 
+  @::__defineGetter__ 'BaseSchema', () ->
+    return BaseSchema
+
   @::__defineGetter__ 'appConfig', () ->
     return @__config
+
+  @::__defineGetter__ 'configuration', () ->
+    return @__configCallbacks
+
+  @::__defineGetter__ "Permission", () ->
+    Permission
 
 
 module.exports = Crisco

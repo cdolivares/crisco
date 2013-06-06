@@ -8,6 +8,7 @@
         "url": ""
     },
     "author": "Chris Olivares <chris@classdojo.com>",
+    "license": "MIT",
     "main": "./index.js",
     "scripts": {
       "watch" : "coffee -c -w  -o lib src"
@@ -19,7 +20,7 @@
         "coffee-script": "1.4.0",
         "underscore": "1.4.2",
         "express": "3.2.4",
-        "database": "git+ssh://git@github.com:cdolivares/database#master",
+        "database": "git+ssh://git@github.com:classdojo/database#master",
         "async": "0.2.9"
     },
     "devDependencies": { 

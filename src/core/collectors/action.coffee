@@ -11,9 +11,9 @@ ActionDomain = require("#{__dirname}/../domains/action")
 
 class ActionCollector
 
-  constructor: (express, conditioner) ->
+  constructor: (express, actionInitializer) ->
     @__e  = express
-    @__cond = conditioner
+    @__a = actionInitializer
     @__actions = {}
 
   ###
@@ -26,7 +26,7 @@ class ActionCollector
   ###
 
   add: (name, config) ->
-    ad = new ActionDomain(@__e, config, @__cond)
+    ad = new ActionDomain(@__e, config, @__a)
     ad.enrich()
     @__actions[name] = ad
 
