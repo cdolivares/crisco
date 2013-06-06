@@ -1,3 +1,5 @@
+myAsync = require("#{__dirname}/../../helpers/async")
+
 ###
   Class: CriscoModel
 
@@ -5,7 +7,6 @@
   model population convenience methods,
   access to the database layers.
 ###
-
 
 class CriscoModel
 
@@ -165,6 +166,18 @@ class CriscoModel
       if results?  #done
         clbk null, results
 
+  ###
+    getRoot
+
+    Returns then root node for this request
+    or NULL if it doesn't exist
+  ###
+  getRoot: () ->
+    for t in @targets()
+      node = @database.nodeManager.find(t)
+      if node.isRoot
+        return node
+    return null
 
   ###
     Method: targets
