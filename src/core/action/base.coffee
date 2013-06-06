@@ -34,15 +34,25 @@ class BaseAction
       @_d = d
 
     f.app.post = (route, actionHandler) ->
+      console.log "BASE! ", f.utils._prefixRoute(route)
       f._routes.push
         tag: f.__vars.t
-        route: route
+        route: f.utils._prefixRoute(route)
         method: "POST"
         handler: actionHandler
       f._reset()
 
     f._reset = () ->
       @__vars.t = null
+
+    f.utils = {}
+
+    f.utils._prefixRoute = (r) ->
+      if Crisco.appConfig.routes?
+        pre = Crisco.appConfig.routes.prefix || ""
+      else
+        pre = ""
+      return "#{pre}#{r}"
 
     f.serialize = () ->
       #serialization here
