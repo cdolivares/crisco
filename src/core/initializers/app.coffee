@@ -43,7 +43,14 @@ class AppInitializer
 
 
   ###
-  constructor: (@__a, @__r, @__s, @__p, @__dbSettings) ->
+  constructor: (crisco, actions, resources, schemas, plugins, dbSettings) ->
+
+    @__a          = actions
+    @__r          = resources
+    @__s          = schemas
+    @__p          = plugins
+    @__dbSettings = dbSettings
+    @__c          = crisco
 
     @__initializers =
       route     : {}
@@ -66,18 +73,18 @@ class AppInitializer
           Server configuration needs reference to database.
           Pass in here.
         ###
-        if Crisco.configuration["server"]?
-          Crisco.configuration["server"] @__e, db
+        if @__c.configuration["server"]?
+          @__c.configuration["server"] @__e, db
 
         primitiveFactory = @_initializePrimitiveFactory()
 
         @__initializers.resource = resourceInitializer =
-            new ResourceInitializer(db, primitiveFactory)
+            new ResourceInitializer(@__c, db, primitiveFactory)
         @__initializers.action = actionInitializer =
-            new ActionInitializer(db, primitiveFactory)
+            new ActionInitializer(@__c, db, primitiveFactory)
 
 
-        resourceCollector = new ResourceCollector(@__e, resourceInitializer)
+        resourceCollector = new ResourceCollector(@__c, @__e, resourceInitializer)
         actionCollector = new ActionCollector(@__e, actionInitializer)
 
         @__initializers.route.resource =
@@ -114,7 +121,7 @@ class AppInitializer
     for n, a of @__a
       domainConfigs.action[n] = a.serialize()
 
-    primitiveFactory = new PrimitiveFactory(Crisco.appConfig, domainConfigs, @__database)
+    primitiveFactory = new PrimitiveFactory(@__c, domainConfigs, @__database)
 
     primitiveFactory.registerPrimitive "CriscoModel", CriscoModel
     primitiveFactory.registerPrimitive "CriscoAction", CriscoAction

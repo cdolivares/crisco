@@ -1,6 +1,8 @@
+
 BaseAction   = require("#{__dirname}/action/base")
 BaseResource = require("#{__dirname}/resource/base")
 Getter       = require("#{__dirname}/../helpers/getter")
+_            = require("underscore")
 ApplicationInitializer =
     require("#{__dirname}/initializers/app")
 
@@ -36,13 +38,18 @@ class Crisco
   ###
 
   constructor: (config) ->
+
     @__config = config
+
+    _.defaults @__config, 
+      schemas   : {}
+      plugins   : {}
+      actions   : {}
+      resources : {}
+
+
     @__customMiddleware = {}
     @__configCallbacks = {}
-
-    #let's export crisco into the Global Namespace for
-    #visibility in Resource and Action Controllers
-    global.Crisco = @
 
 
   ###
@@ -83,14 +90,31 @@ class Crisco
   getMiddleware: (name) ->
     @__customMiddleware[name]
 
-  start: (clbk) ->
-    config           = @__config
 
-    schemas    = config.schemas or require(config.schemaPath)
-    plugins    = config.plugins or (new Getter(config.pluginPath)).get()
-    dbSettings = config.dbSettings or require(config.dbSettingsPath)
-    resources  = config.resources or (new Getter(config.resourcePath)).get()
-    actions    = config.actions or (new Getter(config.actionsPath)).get()
+  ###
+    Method: use
+
+    uses a plugin 
+  ###
+
+  use: (options = {}) ->
+
+    if @_initialized
+      throw new Error "cannot use a plugin after initialization"
+
+    for moduleType in Object.keys(@__config)
+      if modules = options[moduleType]
+        _.extend @__config[moduleType], modules
+
+
+
+  ### 
+  ###
+
+  start: (clbk) ->
+    @_initialized = true
+
+    config           = @__config
 
     ###
       Register Default Middleware
@@ -103,11 +127,12 @@ class Crisco
 
     # #Initialization a bit verbose here...let's cleanup
     app = new ApplicationInitializer(
-              actions,
-              resources,
-              schemas,
-              plugins,
-              dbSettings
+              @,
+              config.actions,
+              config.resources,
+              config.schemas,
+              config.plugins,
+              config.dbSettings
               )
 
     app.init (err, express) =>
@@ -118,10 +143,10 @@ class Crisco
     Convenience Getters
   ###
   @::__defineGetter__ 'BaseAction', () ->
-    return BaseAction.clone()
+    return BaseAction.clone @
 
   @::__defineGetter__ 'BaseResource', () ->
-    return BaseResource.clone()
+    return BaseResource.clone @
 
   @::__defineGetter__ 'BaseSchema', () ->
     return BaseSchema

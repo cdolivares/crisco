@@ -1,6 +1,6 @@
 class POST
 
-  constructor: () ->
+  constructor: (crisco, r) ->
     console.log "Initializing default POST"
 
   handler: () =>

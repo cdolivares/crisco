@@ -49,7 +49,7 @@ class CriscoModel
 
     @param - 
   ###
-  @init = (domain, req) ->
+  @init = (crisco, domain, req) ->
     ###
       Eventually we'll also include logic to initialize
       and cache any shared resources between CriscoModel.
@@ -59,7 +59,7 @@ class CriscoModel
       method: req.method
       query:  req.query
       body:   req.body
-    cm = new @ domain, @__vars.database, routeInfo
+    cm = new @ crisco, domain, @__vars.database, routeInfo
     return cm
 
 
@@ -102,7 +102,7 @@ class CriscoModel
               }
   ###
 
-  constructor: (domain, database, routeInfo) ->
+  constructor: (crisco, domain, database, routeInfo) ->
     @__domain = domain
     @__database = database
     @__routeInfo = routeInfo
