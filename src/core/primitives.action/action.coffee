@@ -45,7 +45,7 @@ class CriscoAction
 
     @param - 
   ###
-  @init = (domain, req, res) ->
+  @init = (crisco, domain, req, res) ->
     ###
       Eventually we'll also include logic to initialize
       and cache any shared resources between CriscoModel.
@@ -53,7 +53,7 @@ class CriscoAction
     routeInfo =
       req: req
       body: req.body
-    cm = new @ domain, @__vars.database, routeInfo
+    cm = new @ crisco, domain, @__vars.database, routeInfo
     return cm
 
 
@@ -96,7 +96,7 @@ class CriscoAction
               }
   ###
 
-  constructor: (domain, database, routeInfo) ->
+  constructor: (crisco, domain, database, routeInfo) ->
     @__domain = domain
     @__database = database
     @__routeInfo = routeInfo

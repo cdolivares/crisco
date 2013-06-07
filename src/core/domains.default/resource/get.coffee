@@ -10,7 +10,8 @@ class GET
         handler: RouteFn
       }
   ###
-  constructor: (r) ->
+  constructor: (crisco, r) ->
+    @__c = crisco
     @__r = r
 
   handler: (req, res, next) =>
@@ -34,7 +35,7 @@ class GET
 
   _default: (CriscoModel, Aux, next) =>
     #defer this to the client!
-    clientClbk = Crisco.getMiddleware("resource:default:get")
+    clientClbk = @__c.getMiddleware("resource:default:get")
     if not clientClbk?
       Aux.error "No default get logic supplied by client. Skipping..."
       return next()

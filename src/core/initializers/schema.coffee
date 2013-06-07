@@ -10,16 +10,12 @@ Database = require("database").Database
 
 class SchemaInitializer
 
-  constructor: (schemaGetter, pluginGetter, dbSettingsGetter) ->
-    @__sGetter          = schemaGetter
-    @__pGetter          = pluginGetter
-    @__dbSettingsGetter = dbSettingsGetter
+  constructor: (@__schema, @__plugins, @__dbSettings) ->
 
   init: (clbk) ->
-    _plugins = @__pGetter.get()
-    _db = new Database(@__sGetter.path, @__dbSettingsGetter.path).init()
+    _db = new Database(@__schema, @__dbSettings).init()
 
-    for pluginName, plugin of _plugins
+    for pluginName, plugin of @_plugins
       _db.registerPlugin pluginName, plugin
 
     _db.connect (err, criscoDatabase) =>

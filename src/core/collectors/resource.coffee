@@ -11,7 +11,8 @@ ResourceDomain = require("#{__dirname}/../domains/resource")
 
 class ResourceCollector
 
-  constructor: (express, resourceInitializer) ->
+  constructor: (crisco, express, resourceInitializer) ->
+    @__c = crisco
     @__e = express
     @__r = resourceInitializer
     @__resources = {}

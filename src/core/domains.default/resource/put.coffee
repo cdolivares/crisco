@@ -1,6 +1,6 @@
 class PUT
 
-  constructor: () ->
+  constructor: (crisco, r) ->
     console.log "Initializing default PUT"
 
   handler: () =>
