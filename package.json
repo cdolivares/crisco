@@ -1,7 +1,7 @@
 {
     "name": "crisco",
     "description": "A slick framework built on expressjs",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "private": true,
     "repository": {
         "type": "git",
@@ -20,7 +20,7 @@
         "coffee-script": "1.4.0",
         "underscore": "1.4.2",
         "express": "3.2.4",
-        "database": "git+ssh://git@github.com:classdojo/database#master",
+        "database": "git+ssh://git@github.com:classdojo/database#dev",
         "async": "0.2.9"
     },
     "devDependencies": { 

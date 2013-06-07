@@ -1,6 +1,6 @@
 class DEL
 
-  constructor: () ->
+  constructor: (crisco, r) ->
     console.log "Initializing default DEL"
 
   handler: () =>

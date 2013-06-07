@@ -12,7 +12,7 @@ class BaseAction
     @_m = @_m || {}
     @_m[name] = middleware
 
-  @clone = () ->
+  @clone = (crisco) ->
     f = () ->
 
     f._routes = []
@@ -47,8 +47,8 @@ class BaseAction
     f.utils = {}
 
     f.utils._prefixRoute = (r) ->
-      if Crisco.appConfig.routes?
-        pre = Crisco.appConfig.routes.prefix || ""
+      if crisco.appConfig.routes?
+        pre = crisco.appConfig.routes.prefix || ""
       else
         pre = ""
       return "#{pre}#{r}"
