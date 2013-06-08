@@ -31,10 +31,13 @@ class GET
     Implementation lives here for now, but follows the
     same convention as any other CriscoMiddleware. No
     reason client can't override this functionality.
+
+    NOTE(chris): This logic isn't quite right and will break
+    for any permission hierarchy with h > 1. Build a more
+    appropriate abstraction ASAP.
   ###
 
   _default: (CriscoModel, Aux, next) =>
-
     #defer this to the client!
     clientClbk = @__c.getMiddleware("resource:default:get")
     if not clientClbk?
