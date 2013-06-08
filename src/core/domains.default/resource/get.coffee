@@ -52,15 +52,18 @@ class GET
         #slice off the rest of the array after the rootNode and
         #follow ownership path from there.
         nArr = arr.slice(arr.indexOf(rootNode.alternateName) + 1)
-        find = (memo, collItem, callback) =>
-          targets = memo.shift()
+        o =
+          ownerDocs: result
+          target: nArr.shift()
+        nArr.unshift(o)
+        find = (memo, dataObj, callback) =>
           clbk = (err, docs) ->
             if err?
               callback err, null
             else
-              callback null, memo.push(docs)
-          clientClbk.call(clientClbk, CriscoModel, Aux, targets, collItem, clbk)
-        async.reduce nArr, [result], find, (err, result) ->
+              callback null, _.extend(memo, docs)
+          clientClbk.call(clientClbk, CriscoModel, Aux, dataObj.ownerDocs, dataObj.target, clbk)
+        async.reduce nArr, {}, find, (err, result) ->
           Aux.res.send 200, {data: result}
 
   @::__defineGetter__ 'route', () ->
