@@ -51,23 +51,31 @@ class GET
       if err?
         Aux.error err
       else
-        arr = CriscoModel.targets().reverse()
+        targets = CriscoModel.targets()
+        arr = targets.slice(0).reverse()
         #slice off the rest of the array after the rootNode and
         #follow ownership path from there.
         nArr = arr.slice(arr.indexOf(rootNode.alternateName) + 1)
-        o =
-          ownerDocs: result
-          target: nArr.shift()
-        nArr.unshift(o)
-        find = (memo, dataObj, callback) =>
+        memo = {}
+        previousCollection = rootNode.alternateName
+        memo[previousCollection] = [result]
+        find = (memo, collection, callback) =>
           clbk = (err, docs) ->
+            previousCollection = collection
             if err?
               callback err, null
             else
               callback null, _.extend(memo, docs)
-          clientClbk.call(clientClbk, CriscoModel, Aux, dataObj.ownerDocs, dataObj.target, clbk)
-        async.reduce nArr, {}, find, (err, result) ->
-          Aux.res.send 200, {data: result}
+          parent =
+            collection: previousCollection
+            result: memo[previousCollection]
+          child =
+            collection: collection
+            id: CriscoModel.getParam(collection)
+          clientClbk.call(clientClbk, CriscoModel, Aux, parent, child, clbk)
+        async.reduce nArr, memo, find, (err, result) ->
+          r = _.pick result, targets[0]
+          Aux.res.send 200, {data: r}
 
   @::__defineGetter__ 'route', () ->
     @__r.route

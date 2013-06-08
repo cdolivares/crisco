@@ -186,15 +186,17 @@ class CriscoModel
 
 
   targets: () ->
-    _.reject(  #simplify and make more robust.
+    z = _.reject(  #simplify and make more robust.
         _.reject(
             @__routeInfo.route.path.split('/'),
             (r) ->
-              return (r.indexOf(":") isnt -1)
+              rejectIf = /\:|^v.+\./
+              return r.match(rejectIf)?
         ), 
         (r2) ->
           ((r2.length < 1) or (r2 is 'api'))
-    ).reverse()
+    )
+    z.reverse()
 
   ###
     Method: getParam
@@ -203,7 +205,11 @@ class CriscoModel
 
   getParam: (name) ->
     regexp = "\/#{name}\/([^\/\?]+)"
-    @__routeInfo.route.url.match(regexp)[1]
+    m = @__routeInfo.route.url.match(regexp)
+    if not m?
+      return null
+    else
+      return m[1]
 
   @::__defineGetter__ "database", () ->
     return @__database
