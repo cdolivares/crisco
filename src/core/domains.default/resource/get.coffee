@@ -49,7 +49,9 @@ class GET
         Aux.error err
       else
         arr = CriscoModel.targets().reverse()
-        nArr = arr.slice(arr.indexOf(rootNode.alternateName))
+        #slice off the rest of the array after the rootNode and
+        #follow ownership path from there.
+        nArr = arr.slice(arr.indexOf(rootNode.alternateName) + 1)
         find = (memo, collItem, callback) =>
           targets = memo.shift()
           clbk = (err, docs) ->
