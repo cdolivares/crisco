@@ -27,6 +27,8 @@ class ActionDomain
   ###
     Method: constructor
 
+    @param - crisco - an instance of the crisco
+             application
     @param - express - instance of express
     @param - config - An object describing a 
              resource domain.
@@ -52,23 +54,24 @@ class ActionDomain
       }
   ###
 
-  constructor: (express, config, actionInitializer) ->
-    @__e     = express
-    @__c     = config
-    @__aInit = actionInitializer
+  constructor: (crisco, express, config, actionInitializer) ->
+    @__c        = crisco
+    @__e        = express
+    @__config   = config
+    @__aInit    = actionInitializer
 
   enrich: () ->
-    routeKeyedBefore = MWareTransformer.transform @__c.beforeHooks
-    routeKeyedAfter  = MWareTransformer.transform @__c.afterHooks
-    for r in @__c.routes
+    routeKeyedBefore = MWareTransformer.transform @__config.beforeHooks
+    routeKeyedAfter  = MWareTransformer.transform @__config.afterHooks
+    for r in @__config.routes
       beforeHooks = routeKeyedBefore[r.tag] || routeKeyedBefore["default"]
       afterHooks = routeKeyedAfter[r.tag] || routeKeyedAfter["default"]
       fn = @_constructRouteHandler(r)
       defaultAction = new DefaultAction(r)
       clbk = (req, res, next) ->
       # Need to start the crisco chain with a Crisco route conditioner
-      beforeHooks = _.filter(_.map(beforeHooks, (n) => @__c.m[n]), (z) => _.isFunction(z))
-      afterHooks = _.filter(_.map(afterHooks, (n) => @__c.m[n]), (z) => _.isFunction(z))
+      beforeHooks = _.filter(_.map(beforeHooks, (n) => @__config.m[n]), (z) => _.isFunction(z))
+      afterHooks = _.filter(_.map(afterHooks, (n) => @__config.m[n]), (z) => _.isFunction(z))
       wrappedBeforeHooks = _.map(beforeHooks,
           (bh) => 
             z = new MiddlewareWrapper(bh)
@@ -80,7 +83,7 @@ class ActionDomain
             return z.handler()
           )
       args =  [defaultAction.route] 
-                .concat(@__aInit.get(@__c.domain))
+                .concat(@__aInit.get(@__config.domain))
                 .concat(wrappedBeforeHooks) #map to middleware defns and filter out undefined values
                 .concat([defaultAction.handler])
                 .concat(wrappedAfterHooks)

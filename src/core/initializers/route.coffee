@@ -1,7 +1,7 @@
 ###
   Class: RouteInitializer
 
-  Responsible for readying in
+  Responsible for reading in
   application configuration
   files. Currently, this means
   Resource and Action definition

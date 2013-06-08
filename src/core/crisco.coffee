@@ -99,7 +99,7 @@ class Crisco
 
   use: (options = {}) ->
 
-    if @_initialized
+    if @__initialized
       throw new Error "cannot use a plugin after initialization"
 
     for moduleType in Object.keys(@__config)
@@ -112,7 +112,7 @@ class Crisco
   ###
 
   start: (clbk) ->
-    @_initialized = true
+    @__initialized = true
 
     config           = @__config
 

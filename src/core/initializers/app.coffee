@@ -85,7 +85,7 @@ class AppInitializer
 
 
         resourceCollector = new ResourceCollector(@__c, @__e, resourceInitializer)
-        actionCollector = new ActionCollector(@__e, actionInitializer)
+        actionCollector = new ActionCollector(@__c, @__e, actionInitializer)
 
         @__initializers.route.resource =
             new RouteInitializer(@__r, resourceCollector)

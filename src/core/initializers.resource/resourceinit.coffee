@@ -17,9 +17,10 @@ CriscoResourceInit =
 
 class ResourceInitializer
 
-  constructor: (database, primitiveFactory) ->
+  constructor: (crisco, database, primitiveFactory) ->
+    @__c  = crisco
     @__db = database
-    @__resourceInit = new CriscoResourceInit(@__db, primitiveFactory)
+    @__resourceInit = new CriscoResourceInit(@__c, @__db, primitiveFactory)
     @__resourceInit.init()
 
 

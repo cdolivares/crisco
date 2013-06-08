@@ -34,6 +34,7 @@ class GET
   ###
 
   _default: (CriscoModel, Aux, next) =>
+
     #defer this to the client!
     clientClbk = @__c.getMiddleware("resource:default:get")
     if not clientClbk?
@@ -50,7 +51,7 @@ class GET
         arr = CriscoModel.targets().reverse()
         nArr = arr.slice(arr.indexOf(rootNode.alternateName))
         find = (memo, collItem, callback) =>
-          targets = memo.unshift()
+          targets = memo.shift()
           clbk = (err, docs) ->
             if err?
               callback err, null

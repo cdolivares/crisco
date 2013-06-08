@@ -30,7 +30,7 @@ class ResourceCollector
 
   add: (name, config) ->
     #inject domain handlers with the conditioner.
-    rd = new ResourceDomain(@__e, config, @__r)
+    rd = new ResourceDomain(@__c, @__e, config, @__r)
     rd.enrich()
     @__resources[name] = rd
 

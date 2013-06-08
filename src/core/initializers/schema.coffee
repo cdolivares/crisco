@@ -15,7 +15,7 @@ class SchemaInitializer
   init: (clbk) ->
     _db = new Database(@__schema, @__dbSettings).init()
 
-    for pluginName, plugin of @_plugins
+    for pluginName, plugin of @__plugins
       _db.registerPlugin pluginName, plugin
 
     _db.connect (err, criscoDatabase) =>
