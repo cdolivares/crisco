@@ -32,9 +32,6 @@ class GET
     same convention as any other CriscoMiddleware. No
     reason client can't override this functionality.
 
-    NOTE(chris): This logic isn't quite right and will break
-    for any permission hierarchy with h > 1. Build a more
-    appropriate abstraction ASAP.
   ###
 
   _default: (CriscoModel, Aux, next) =>

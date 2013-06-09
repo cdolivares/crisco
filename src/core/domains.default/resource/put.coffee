@@ -1,11 +1,12 @@
 class PUT
 
   constructor: (crisco, r) ->
-    console.log "Initializing default PUT"
+    @__c = crisco
+    @__r = r
 
-  handler: () =>
+  handler: (req, res, next) =>
 
   @::__defineGetter__ 'route', () ->
-    "/api/resource/put"
+    @__r.route
 
 module.exports = PUT

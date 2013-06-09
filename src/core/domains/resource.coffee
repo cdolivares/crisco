@@ -114,7 +114,7 @@ class ResourceDomain
 
     routeInfo = routeHandlers[r.method]
 
-    unless routeInfo
+    unless routeInfo?
       console.error "Invalid HTTP Route #{routeDef.method} for #{routeDef.route}"
       return []
 

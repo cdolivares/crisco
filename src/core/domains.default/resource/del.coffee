@@ -1,11 +1,12 @@
 class DEL
 
   constructor: (crisco, r) ->
-    console.log "Initializing default DEL"
+  	@__c = crisco
+  	@__r = r
 
-  handler: () =>
+  handler: (req, res, next) =>
 
   @::__defineGetter__ 'route', () ->
-    "/api/resource/del"
+    @__r.route
 
 module.exports = DEL
