@@ -24,6 +24,18 @@ class POST
     if not clientClbk?
       Aux.error "No default post logic supplied by client. Skipping..."
       return next()
+    targets = CriscoModel.targets()
+    childCollection = targets[0]
+    if targets.length > 1
+      parentCollection = CriscoModel.targets()[1]
+    if parentCollection?
+      parent =
+        collection: parentCollection
+        id: CriscoModel.getParam(parentCollection)
+    else
+      #this is a 1st degree child of Actor.
+      parent = null
+
     targetNode = CriscoModel.database.nodeManager.find(CriscoModel.targets()[0])
     if _.isArray(Aux.body)
       unpack = true
@@ -31,7 +43,11 @@ class POST
     else
       unpack = false
       body = [Aux.body]
-    tasks = _.map body, (e) -> return clientClbk.bind(clientClbk, targetNode, e) 
+    tasks = _.map body, (e) -> 
+      child =
+        collection: childCollection
+        properties: e
+      return clientClbk.bind(clientClbk, CriscoModel, Aux, parent, child) 
     myAsync.parallel tasks, (err, results) =>
       if not err?
         payload = {}
