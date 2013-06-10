@@ -23,7 +23,7 @@ class PUT
       return next()
     targets = CriscoModel.targets()
     targetCollection = targets[0]
-    targetNode = CriscoModel.database.nodeManager.find(CriscoModel.targets()[0])
+    targetNode = CriscoModel.database.nodeManager.find(targetCollection)
     targetObject =
       collection: targetCollection
       id: CriscoModel.getParam(targetCollection)
