@@ -111,7 +111,7 @@ class Crisco
   ### 
   ###
 
-  start: (clbk) ->
+  start: (clbk = () ->) ->
     @__initialized = true
 
     config           = @__config
