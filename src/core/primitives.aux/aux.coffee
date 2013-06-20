@@ -1,3 +1,5 @@
+Response = require("#{__dirname}/response")
+
 class CriscoAux
 
 
@@ -111,8 +113,8 @@ class CriscoAux
     For now defer to default console.log
   ###
 
-  log: () ->
-    console.log
+  log: (args...) ->
+    console.log.apply(null, args)
 
   ###
     Method: error
@@ -121,12 +123,16 @@ class CriscoAux
     For now defer to default console.error
   ###
 
-  error: () ->
-    console.error
+  error: (args...) ->
+    console.error.apply(null, args)
+
 
   ###
     Getters
   ###
+
+  @::__defineGetter__ "response", () ->
+    @__cache.response = @__cache.response || new Response(@req, @res)
 
   ###
     req - An untouched Express.js req object.
