@@ -37,9 +37,11 @@ class Response
 
   message: (m) ->
     @__message = m
+    @
 
   empty: () ->
     @__cache.objs = {}
+    @
 
   send: () ->
     if @__message?
