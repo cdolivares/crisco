@@ -12,7 +12,7 @@ module.exports = (CriscoModels, Aux, next) ->
         t = models[node.alternateName]
         me = Aux.me
         #check permissions here...
-        v = Crisco.getMiddleware "verify:permission"
+        v = Aux.crisco.getMiddleware "verify:permission"
         if not v?
           console.error "-------------------------"
           console.error "No permission verification handler registered:"

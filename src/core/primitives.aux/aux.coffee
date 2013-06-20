@@ -1,3 +1,5 @@
+Response = require("#{__dirname}/response")
+
 class CriscoAux
 
 
@@ -46,7 +48,7 @@ class CriscoAux
 
     @param - 
   ###
-  @init = (domain, req, res) ->
+  @init = (crisco, domain, req, res) ->
     ###
       Eventually we'll also include logic to initialize
       and cache any shared resources between CriscoModel.
@@ -54,7 +56,7 @@ class CriscoAux
     routeInfo =
       req: req
       res: res
-    cm = new @ domain, @__vars.database, routeInfo
+    cm = new @ crisco, domain, @__vars.database, routeInfo
     return cm
 
 
@@ -97,7 +99,8 @@ class CriscoAux
               }
   ###
 
-  constructor: (domain, database, routeInfo) ->
+  constructor: (crisco, domain, database, routeInfo) ->
+    @__crisco = crisco
     @__domain = domain
     @__database = database
     @__routeInfo = routeInfo
@@ -110,8 +113,8 @@ class CriscoAux
     For now defer to default console.log
   ###
 
-  log: () ->
-    console.log
+  log: (args...) ->
+    console.log.apply(null, args)
 
   ###
     Method: error
@@ -120,12 +123,16 @@ class CriscoAux
     For now defer to default console.error
   ###
 
-  error: () ->
-    console.error
+  error: (args...) ->
+    console.error.apply(null, args)
+
 
   ###
     Getters
   ###
+
+  @::__defineGetter__ "response", () ->
+    @__cache.response = @__cache.response || new Response(@req, @res)
 
   ###
     req - An untouched Express.js req object.
@@ -141,9 +148,14 @@ class CriscoAux
   @::__defineGetter__ "res", () ->
     @__routeInfo.res
 
+  @::__defineGetter__ "body", () ->
+    @__routeInfo.req.body
+
+  @::__defineGetter__ "crisco", () ->
+    @__crisco
+
   @::__defineGetter__ "me", () ->
     if not @__routeInfo.req.__crisco?
-      console.log "NOOO CRISCO!"
       return null
     else
       @__routeInfo.req.__crisco.me

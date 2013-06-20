@@ -12,7 +12,7 @@ class BaseResource
     @_m = @_m || {}
     @_m[name] = middleware
 
-  @clone = () ->
+  @clone = (crisco) ->
     f = () ->
 
     f._routes = []
@@ -50,7 +50,7 @@ class BaseResource
       ###
       f._routes.push
         tag:     f.__vars.t
-        route:   route
+        route:   f.utils._prefixRoute(route)
         method: "GET"
         handler: routeHandler
       f._reset()
@@ -58,7 +58,7 @@ class BaseResource
     f.app.post = (route, routeHandler) ->
       f._routes.push
         tag: f.__vars.t
-        route: route
+        route: f.utils._prefixRoute(route)
         method: "POST"
         handler: routeHandler
       f._reset()
@@ -66,7 +66,7 @@ class BaseResource
     f.app.put  = (route, routeHandler) ->
       f._routes.push
         tag: f.__vars.t
-        route: route
+        route: f.utils._prefixRoute(route)
         method: "PUT"
         handler: routeHandler
       f._reset()
@@ -74,13 +74,22 @@ class BaseResource
     f.app.del  = (route, routeHandler) ->
       f._routes.push
         tag: f.__vars.t
-        route: route
+        route: f.utils._prefixRoute(route)
         method: "DEL"
         handler: routeHandler
       f._reset()
 
     f._reset = () ->
       f.__vars._t = null
+
+    f.utils = {}
+
+    f.utils._prefixRoute = (r) ->
+      if crisco.appConfig.routes?
+        pre = crisco.appConfig.routes.prefix || ""
+      else
+        pre = ""
+      return "#{pre}#{r}"
 
     f.serialize = () ->
       #serialization here

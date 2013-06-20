@@ -3,10 +3,11 @@ CriscoActionInit =
 
 class ActionInitializer
 
-  constructor: (database, primitiveFactory) ->
+  constructor: (crisco, database, primitiveFactory) ->
+    @__c = crisco
     @__db = database
     @__primitiveFactory = primitiveFactory
-    @__actionInit = new CriscoActionInit(@__db, primitiveFactory)
+    @__actionInit = new CriscoActionInit(@__c, @__db, primitiveFactory)
     @__actionInit.init()
 
 

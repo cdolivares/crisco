@@ -26,7 +26,7 @@ Middleware =
         if me?
           req.__crisco.me = me
         next()
-      m = Crisco.getMiddleware "deserialize"
+      m = @__c.getMiddleware "deserialize"
       if m?
         m.call(m, req, res, @__database, h)
       else
@@ -53,9 +53,9 @@ Middleware =
 
 class CriscoResourceInit
 
-  constructor: (database, primitiveFactory) ->
-    appConfig = {}
-    @__database = database
+  constructor: (crisco, database, primitiveFactory) ->
+    @__c                = crisco
+    @__database         = database
     @__primitiveFactory = primitiveFactory
 
   init: () ->
@@ -64,7 +64,7 @@ class CriscoResourceInit
 
   getExpressMiddleware: (domain) ->
     return [
-      Middleware['1'](domain),
+      Middleware['1'](@__c, domain),
       Middleware['2'](domain)
     ]
 

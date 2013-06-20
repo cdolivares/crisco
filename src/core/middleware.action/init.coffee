@@ -19,14 +19,14 @@ Middleware =
     -Call user registered deserializer
     if it exists.
   ###
-  '1': (domain) ->
+  '1': (crisco, domain) ->
     return (req, res, next) =>
       req.__crisco = {}
       h = (me) =>
         if me?
           req.__crisco.me = me
         next()
-      m = Crisco.getMiddleware "deserialize"
+      m = @__c.getMiddleware "deserialize"
       if m?
         m.call(m, req, res, @__database, h)
       else
@@ -61,7 +61,8 @@ Middleware =
 ###
 class CriscoActionInit
 
-  constructor: (database, primitiveFactory) ->
+  constructor: (crisco, database, primitiveFactory) ->
+    @__c                = crisco
     @__database         = database
     @__primitiveFactory = primitiveFactory
 
@@ -71,7 +72,7 @@ class CriscoActionInit
 
   getExpressMiddleware: (domain) ->
     return [
-      Middleware['1'](domain),
+      Middleware['1'](@__c, domain),
       Middleware['2'](domain)
     ]
 
