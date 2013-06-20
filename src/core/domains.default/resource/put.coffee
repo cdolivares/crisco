@@ -31,12 +31,9 @@ class PUT
 
     clientClbk CriscoModel, Aux, targetObject, (err, result) ->
       if err?
-        Aux.res.send 500, {message: err.message}
+        Aux.response.status(500).message(err.message).send()
       else
-        o = {}
-        o.data = {}
-        o.data["#{targetCollection}"] = result
-        Aux.res.send 200, o
+        Aux.response.success().pack(result).send()
 
   @::__defineGetter__ 'route', () ->
     @__r.route

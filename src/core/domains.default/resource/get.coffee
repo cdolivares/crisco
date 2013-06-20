@@ -72,7 +72,7 @@ class GET
           clientClbk.call(clientClbk, CriscoModel, Aux, parent, child, clbk)
         async.reduce nArr, memo, find, (err, result) ->
           r = _.pick result, targets[0]
-          Aux.res.send 200, {data: r}
+          Aux.response.success().raw(r).send()
 
   @::__defineGetter__ 'route', () ->
     @__r.route

@@ -31,10 +31,8 @@ class DEL
           if err?
             Aux.res.send 500, {message: err.message}
           else
-            o =
-              data: {}
-            o.data["#{targetCollection}"] = target
-            Aux.res.send 200, o
+            Aux.response.success().pack(target).send()
+            # Aux.res.send 200, o
 
   @::__defineGetter__ 'route', () ->
     @__r.route
