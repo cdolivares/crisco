@@ -21,9 +21,9 @@ class PrimitiveFactory
     @param - database - instance of database
   ###
 
-  constructor: (appConfig, domainConfig, database) ->
+  constructor: (crisco, domainConfig, database) ->
     @__configs =
-      app: appConfig
+      app: crisco.appConfig
       domain: domainConfig
     @__database = database
     @__primitives = {}
@@ -36,6 +36,6 @@ class PrimitiveFactory
     P = @__primitives[name]
     if not P?
       return null
-    return  P.init(domain, req, res)
+    return  P.init(crisco, domain, req, res)
 
 module.exports = PrimitiveFactory

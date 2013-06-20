@@ -11,7 +11,8 @@ ResourceDomain = require("#{__dirname}/../domains/resource")
 
 class ResourceCollector
 
-  constructor: (express, resourceInitializer) ->
+  constructor: (crisco, express, resourceInitializer) ->
+    @__c = crisco
     @__e = express
     @__r = resourceInitializer
     @__resources = {}
@@ -29,7 +30,7 @@ class ResourceCollector
 
   add: (name, config) ->
     #inject domain handlers with the conditioner.
-    rd = new ResourceDomain(@__e, config, @__r)
+    rd = new ResourceDomain(@__c, @__e, config, @__r)
     rd.enrich()
     @__resources[name] = rd
 

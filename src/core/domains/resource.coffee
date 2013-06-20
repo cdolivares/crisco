@@ -3,14 +3,23 @@
   Default Resourceful Implementations
 ###
 
-DefaultGet  =
-    require("#{__dirname}/../domains.default/resource/get")
-DefaultPut  =
-    require("#{__dirname}/../domains.default/resource/put")
-DefaultPost =
-    require("#{__dirname}/../domains.default/resource/post")
-DefaultDel  =
-    require("#{__dirname}/../domains.default/resource/del")
+
+routeHandlers = 
+  "GET": 
+    method: "get"
+    klass: require("#{__dirname}/../domains.default/resource/get")
+
+  "PUT": 
+    method: "put"
+    klass: require("#{__dirname}/../domains.default/resource/put")
+
+  "POST" : 
+    method: "post"
+    klass: require("#{__dirname}/../domains.default/resource/post")
+
+  "DEL"  : 
+    method: "delete"
+    klass: require("#{__dirname}/../domains.default/resource/del")
 
 ###
   Crisco Middleware Wrapper
@@ -37,7 +46,9 @@ class ResourceDomain
 
   ###
     Method: constructor
-
+    
+    @param - crisco - an instance of the crisco
+             application
     @param - express - instance of express
     @param - config - An object describing a 
              resource domain.
@@ -63,22 +74,23 @@ class ResourceDomain
       }
   ###
 
-  constructor: (express, config, resourceInitializer) ->
-    @__e = express
-    @__c = config
-    @__rInit = resourceInitializer
+  constructor: (crisco, express, config, resourceInitializer) ->
+    @__c        = crisco
+    @__e        = express
+    @__config   = config
+    @__rInit    = resourceInitializer
 
   enrich: () ->
-    routeKeyedBefore = MWareTransformer.transform @__c.beforeHooks
-    routeKeyedAfter  = MWareTransformer.transform @__c.afterHooks
-    for r in @__c.routes
+    routeKeyedBefore = MWareTransformer.transform @__config.beforeHooks
+    routeKeyedAfter  = MWareTransformer.transform @__config.afterHooks
+    for r in @__config.routes
       beforeHooks = routeKeyedBefore[r.tag] || routeKeyedBefore["default"]
       afterHooks = routeKeyedAfter[r.tag] || routeKeyedAfter["default"]
       [fn, routeHandler] = @_constructRouteHandler(r)
       clbk = (req, res, next) ->
       # Need to start the crisco chain with a Crisco route conditioner
-      beforeHooks = _.filter(_.map(beforeHooks, (n) => @__c.m[n]), (z) => _.isFunction(z))
-      afterHooks = _.filter(_.map(afterHooks, (n) => @__c.m[n]), (z) => _.isFunction(z))
+      beforeHooks = _.filter(_.map(beforeHooks, (n) => @__config.m[n]), (z) => _.isFunction(z))
+      afterHooks = _.filter(_.map(afterHooks, (n) => @__config.m[n]), (z) => _.isFunction(z))
       wrappedBeforeHooks = _.map(beforeHooks,
           (bh) => 
             z = new MiddlewareWrapper(bh)
@@ -90,7 +102,7 @@ class ResourceDomain
             return z.handler()
           )
       args =  [routeHandler.route] 
-                .concat(@__rInit.get(@__c.domain))
+                .concat(@__rInit.get(@__config.domain))
                 .concat(wrappedBeforeHooks) #map to middleware defns and filter out undefined values
                 .concat([routeHandler.handler])
                 .concat(wrappedAfterHooks)
@@ -99,22 +111,14 @@ class ResourceDomain
 
 
   _constructRouteHandler: (r) ->
-    switch r.method
-      when "GET"
-        fn = @__e.get
-        d = new DefaultGet(r)
-      when "POST"
-        fn = @__e.post
-        d = new DefaultPost(r)
-      when "PUT"
-        fn = @__e.put
-        d = new DefaultPut(r)
-      when "DEL"
-        fn = @__e.delete
-        d = new DefaultDel(r)
-      else
-        console.error "Invalid HTTP Route #{routeDef.method} for #{routeDef.route}"
-        return []
-    return [fn, d]
+
+    routeInfo = routeHandlers[r.method]
+
+    unless routeInfo?
+      console.error "Invalid HTTP Route #{routeDef.method} for #{routeDef.route}"
+      return []
+
+    return [@__e[routeInfo.method], new routeInfo.klass(@__c, r)]
+
 
 module.exports = ResourceDomain

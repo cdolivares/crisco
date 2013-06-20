@@ -1,3 +1,5 @@
+myAsync = require("#{__dirname}/../../helpers/async")
+
 ###
   Class: CriscoModel
 
@@ -5,7 +7,6 @@
   model population convenience methods,
   access to the database layers.
 ###
-
 
 class CriscoModel
 
@@ -48,7 +49,7 @@ class CriscoModel
 
     @param - 
   ###
-  @init = (domain, req) ->
+  @init = (crisco, domain, req) ->
     ###
       Eventually we'll also include logic to initialize
       and cache any shared resources between CriscoModel.
@@ -58,7 +59,7 @@ class CriscoModel
       method: req.method
       query:  req.query
       body:   req.body
-    cm = new @ domain, @__vars.database, routeInfo
+    cm = new @ crisco, domain, @__vars.database, routeInfo
     return cm
 
 
@@ -101,7 +102,7 @@ class CriscoModel
               }
   ###
 
-  constructor: (domain, database, routeInfo) ->
+  constructor: (crisco, domain, database, routeInfo) ->
     @__domain = domain
     @__database = database
     @__routeInfo = routeInfo
@@ -165,6 +166,18 @@ class CriscoModel
       if results?  #done
         clbk null, results
 
+  ###
+    getRoot
+
+    Returns then root node for this request
+    or NULL if it doesn't exist
+  ###
+  getRoot: () ->
+    for t in @targets()
+      node = @database.nodeManager.find(t)
+      if node.isRoot
+        return node
+    return null
 
   ###
     Method: targets
@@ -173,15 +186,17 @@ class CriscoModel
 
 
   targets: () ->
-    _.reject(  #simplify and make more robust.
+    z = _.reject(  #simplify and make more robust.
         _.reject(
             @__routeInfo.route.path.split('/'),
             (r) ->
-              return (r.indexOf(":") isnt -1)
+              rejectIf = /\:|^v.+\./
+              return r.match(rejectIf)?
         ), 
         (r2) ->
           ((r2.length < 1) or (r2 is 'api'))
-    ).reverse()
+    )
+    z.reverse()
 
   ###
     Method: getParam
@@ -190,7 +205,11 @@ class CriscoModel
 
   getParam: (name) ->
     regexp = "\/#{name}\/([^\/\?]+)"
-    @__routeInfo.route.url.match(regexp)[1]
+    m = @__routeInfo.route.url.match(regexp)
+    if not m?
+      return null
+    else
+      return m[1]
 
   @::__defineGetter__ "database", () ->
     return @__database

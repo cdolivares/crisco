@@ -1,7 +1,7 @@
 ###
   Class: RouteInitializer
 
-  Responsible for readying in
+  Responsible for reading in
   application configuration
   files. Currently, this means
   Resource and Action definition
@@ -19,8 +19,8 @@ class RouteInitializer
              to the target server, in this case Express.
              
   ###
-  constructor: (getter, collector) ->
-    @__g = getter
+  constructor: (resources, collector) ->
+    @__r = resources
     @__c = collector
     @__serializedConfigs = {}
 
@@ -34,14 +34,13 @@ class RouteInitializer
   ###
 
   init: (clbk) ->
-    @__g.init()
     #let's also construct serialized configs.
-    for n, c of @__g.get()
+    for n, c of @__r
       @__serializedConfigs[n] = c.serialize()
     clbk()
 
   enrich: (clbk) ->
-    for name, confObj of @__g.get()
+    for name, confObj of @__r
       @__c.add name, confObj.serialize()
 
   ###

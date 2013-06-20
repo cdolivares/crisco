@@ -43,15 +43,19 @@ class AppInitializer
 
 
   ###
-  constructor: (actionsG, resourcesG, schemasG, pluginsG, dbSettingsG) ->
-    @__s = schemasG
-    @__r = resourcesG
-    @__p = pluginsG
-    @__a = actionsG
-    @__dbSettings = dbSettingsG
+  constructor: (crisco, actions, resources, schemas, plugins, dbSettings) ->
+
+    @__a          = actions
+    @__r          = resources
+    @__s          = schemas
+    @__p          = plugins
+    @__dbSettings = dbSettings
+    @__c          = crisco
+
     @__initializers =
       route     : {}
-    @__e = Express()
+
+    @__e = Express() 
 
   init: (clbk) ->
 
@@ -69,19 +73,19 @@ class AppInitializer
           Server configuration needs reference to database.
           Pass in here.
         ###
-        if Crisco.configuration["server"]?
-          Crisco.configuration["server"] @__e, db
+        if @__c.configuration["server"]?
+          @__c.configuration["server"] @__e, db
 
         primitiveFactory = @_initializePrimitiveFactory()
 
         @__initializers.resource = resourceInitializer =
-            new ResourceInitializer(db, primitiveFactory)
+            new ResourceInitializer(@__c, db, primitiveFactory)
         @__initializers.action = actionInitializer =
-            new ActionInitializer(db, primitiveFactory)
+            new ActionInitializer(@__c, db, primitiveFactory)
 
 
-        resourceCollector = new ResourceCollector(@__e, resourceInitializer)
-        actionCollector = new ActionCollector(@__e, actionInitializer)
+        resourceCollector = new ResourceCollector(@__c, @__e, resourceInitializer)
+        actionCollector = new ActionCollector(@__c, @__e, actionInitializer)
 
         @__initializers.route.resource =
             new RouteInitializer(@__r, resourceCollector)
@@ -111,14 +115,13 @@ class AppInitializer
     domainConfigs =
       resource  : {}
       action    : {}
-    @__r.init()
-    @__a.init()
-    for n, r of @__r.get()
+    
+    for n, r of @__r
       domainConfigs.resource[n] = r.serialize()
-    for n, a of @__a.get()
+    for n, a of @__a
       domainConfigs.action[n] = a.serialize()
 
-    primitiveFactory = new PrimitiveFactory(Crisco.appConfig, domainConfigs, @__database)
+    primitiveFactory = new PrimitiveFactory(@__c, domainConfigs, @__database)
 
     primitiveFactory.registerPrimitive "CriscoModel", CriscoModel
     primitiveFactory.registerPrimitive "CriscoAction", CriscoAction
