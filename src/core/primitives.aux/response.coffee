@@ -49,7 +49,8 @@ class Response
     else
       payload = @__cache.objs
       if @__cache.__raw?
-        @__cache.__raw.unshift @__cache.objs
+        if @__cache.objs?
+          @__cache.__raw.unshift @__cache.objs
         payload = _.extend.apply _, @__cache.__raw
       @__res.json @__status, {data: payload}
 
