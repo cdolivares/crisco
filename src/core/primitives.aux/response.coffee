@@ -43,7 +43,6 @@ class Response
     @
 
   send: () ->
-    console.log "PAYLOAD ", @__routeInfo
     if @__message?
       @__routeInfo.res.json @__status, {message: @__messsage}
     else
