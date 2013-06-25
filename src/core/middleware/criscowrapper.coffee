@@ -1,7 +1,6 @@
-# module.exports = (fn, default) ->
-#   (req, res, next) ->
-#     CriscoModel = req.__crisco.model
-#     Aux = req.__crisco.aux
+###
+  Explain this...
+###
 
 class CriscoWrapper
 

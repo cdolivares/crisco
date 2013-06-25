@@ -2,7 +2,7 @@ async = require("async")
 
 class GET
   ###
-      Where a route object is defined as:
+      Where a route object, r, is defined as:
       {
         tag: "routeTag"
         route: "/route"
@@ -71,8 +71,14 @@ class GET
             id: CriscoModel.getParam(collection)
           clientClbk.call(clientClbk, CriscoModel, Aux, parent, child, clbk)
         async.reduce nArr, memo, find, (err, result) ->
-          r = _.pick result, targets[0]
-          Aux.response.success().raw(r).send()
+          if not err?
+            r = _.pick result, targets[0]
+            r = r[Object.keys(r).shift()]
+            ###
+              Let's unpack the result of getChildren from
+              the namespaced model collection.
+            ###
+            Aux.response.success().raw(r).send()
 
   @::__defineGetter__ 'route', () ->
     @__r.route

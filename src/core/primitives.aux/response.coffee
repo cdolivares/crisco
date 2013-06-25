@@ -2,9 +2,8 @@ _ = require("underscore")
 
 class Response
 
-  constructor: (req, res) ->
-    @__req = req
-    @__res = res
+  constructor: (routeInfo) ->
+    @__routeInfo = routeInfo
     @__cache = {}
     @__status = 0
     @__message = null
@@ -45,13 +44,15 @@ class Response
 
   send: () ->
     if @__message?
-      @__res.json @__status, {message: @__messsage}
+      @__routeInfo.res.json @__status, {message: @__messsage}
     else
       payload = @__cache.objs
       if @__cache.__raw?
         if @__cache.objs?
           @__cache.__raw.unshift @__cache.objs
-        payload = _.extend.apply _, @__cache.__raw
-      @__res.json @__status, {data: payload}
+        payload = @__cache.__raw
+      if @__routeInfo.getOne
+        payload = payload.shift()
+      @__routeInfo.res.json @__status, {data: payload}
 
 module.exports = Response

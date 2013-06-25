@@ -1,3 +1,5 @@
+_ = require("underscore")
+
 ###
   A collection of the first N
   steps of Crisco initialization.
@@ -43,10 +45,11 @@ Middleware =
     domain configurable options to bootstrap
     itself.
   ###
-  '2': (domain) ->
+  '2': (domain, routeInfo) ->
     return (req, res, next) =>
-      cm = @__primitiveFactory.getPrimitive "CriscoModel", domain, req, res
-      aux = @__primitiveFactory.getPrimitive "CriscoAux", domain, req, res
+      extendedRouteInfo = _.extend routeInfo, {req: req, res: res}
+      cm = @__primitiveFactory.getPrimitive "CriscoModel", domain, extendedRouteInfo
+      aux = @__primitiveFactory.getPrimitive "CriscoAux", domain, extendedRouteInfo
       req.__crisco.model = cm
       req.__crisco.aux   = aux
       next()
@@ -62,10 +65,10 @@ class CriscoResourceInit
     for step, route of Middleware
       Middleware[step] = route.bind(@)
 
-  getExpressMiddleware: (domain) ->
+  getExpressMiddleware: (domain, routeInfo) ->
     return [
       Middleware['1'](@__c, domain),
-      Middleware['2'](domain)
+      Middleware['2'](domain, routeInfo)
     ]
 
 module.exports = CriscoResourceInit

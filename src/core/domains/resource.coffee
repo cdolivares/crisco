@@ -102,7 +102,7 @@ class ResourceDomain
             return z.handler()
           )
       args =  [routeHandler.route] 
-                .concat(@__rInit.get(@__config.domain))
+                .concat(@__rInit.get(@__config.domain, r))
                 .concat(wrappedBeforeHooks) #map to middleware defns and filter out undefined values
                 .concat([routeHandler.handler])
                 .concat(wrappedAfterHooks)
