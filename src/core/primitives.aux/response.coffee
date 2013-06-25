@@ -43,6 +43,7 @@ class Response
     @
 
   send: () ->
+    console.log "PAYLOAD ", @__routeInfo
     if @__message?
       @__routeInfo.res.json @__status, {message: @__messsage}
     else
@@ -51,7 +52,7 @@ class Response
         if @__cache.objs?
           @__cache.__raw.unshift @__cache.objs
         payload = @__cache.__raw
-      if @__routeInfo.getOne
+      if @__routeInfo.getOne or (@__routeInfo.method is "POST" and @__routeInfo.route.indexOf("/action") is -1) #TODO: cleanup
         payload = payload.shift()
       @__routeInfo.res.json @__status, {data: payload}
 
