@@ -11,7 +11,7 @@ class PUT
       #require users to call this function and pass in some
       #optional flag for 
       if runDefault
-        console.log "Running default POST handler..."
+        console.log "Running default PUT handler..."
         @_default CriscoModel, Aux, () ->
           #done
 
@@ -33,7 +33,7 @@ class PUT
       if err?
         Aux.response.status(500).message(err.message).send()
       else
-        Aux.response.success().pack(result).send()
+        Aux.response.success().raw(result).send()
 
   @::__defineGetter__ 'route', () ->
     @__r.route

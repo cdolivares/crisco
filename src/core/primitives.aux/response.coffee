@@ -51,7 +51,7 @@ class Response
         if @__cache.objs?
           @__cache.__raw.unshift @__cache.objs
         payload = @__cache.__raw
-      if @__routeInfo.getOne or (@__routeInfo.method is "POST" and @__routeInfo.route.indexOf("/action") is -1) #TODO: cleanup
+      if @__routeInfo.getOne or (@__routeInfo.method is "POST" and @__routeInfo.route.indexOf("/action") is -1) or (@__routeInfo.method is "PUT") #TODO: cleanup. hilariously bad, but quick.
         payload = payload.shift()
       @__routeInfo.res.json @__status, {data: payload}
 
