@@ -50,7 +50,7 @@ class POST
       return clientClbk.bind(clientClbk, CriscoModel, Aux, parent, child) 
     myAsync.parallel tasks, (err, results) =>
       if not err?
-        Aux.response.success().raw(results[Object.keys(results).shift()]).send()
+        Aux.response.success().pack(results[Object.keys(results).shift()]).send()
         # Aux.res.send 200, {data: payload}
 
     # clientClbk targetNode, Aux.body, (err, result) ->

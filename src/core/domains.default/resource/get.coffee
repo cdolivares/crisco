@@ -90,7 +90,7 @@ class GET
                 Let's unpack the result of getChildren from
                 the namespaced model collection.
               ###
-              Aux.response.success().raw(r).send()
+              Aux.response.success().pack(r).send()
 
   @::__defineGetter__ 'route', () ->
     @__r.route

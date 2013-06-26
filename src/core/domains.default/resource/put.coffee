@@ -33,7 +33,7 @@ class PUT
       if err?
         Aux.response.status(500).message(err.message).send()
       else
-        Aux.response.success().raw(result).send()
+        Aux.response.success().pack(result).send()
 
   @::__defineGetter__ 'route', () ->
     @__r.route

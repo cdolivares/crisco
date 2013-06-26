@@ -32,7 +32,6 @@ class DEL
             Aux.res.send 500, {message: err.message}
           else
             Aux.response.success().pack(target).send()
-            # Aux.res.send 200, o
 
   @::__defineGetter__ 'route', () ->
     @__r.route
