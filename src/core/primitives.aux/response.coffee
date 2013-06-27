@@ -10,11 +10,14 @@ class Response
 
   #objects registered in pack will be replaced with
   #obj.jsonify()
-  pack: (obj) ->
+  pack: (obj, override=false) ->
     if not _.isArray(obj)
       obj = [obj]
     @__cache.objs = (@__cache.objs || [])
-    @__cache.objs = @__cache.objs.concat(obj)
+    if override
+      @__cache.objs = obj
+    else
+      @__cache.objs = @__cache.objs.concat(obj)
     @
 
   raw: (obj) ->
@@ -38,6 +41,7 @@ class Response
   empty: () ->
     @__cache.objs = {}
     @
+
 
   send: () ->
     if @__message?
@@ -71,5 +75,11 @@ class Response
             @__routeInfo.route.indexOf("/action") is -1
           ) or
           (@__routeInfo.method is "PUT")
+
+  @::__defineGetter__ 'payload', () ->
+    return {
+      objs: @__cache.objs,
+      raw: @__cache.raw
+    }
 
 module.exports = Response

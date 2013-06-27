@@ -148,6 +148,13 @@ class CriscoAux
   @::__defineGetter__ "body", () ->
     @__routeInfo.req.body
 
+  @::__defineGetter__ "attachments", () ->
+    req = @__routeInfo.req
+    if req.query?
+      if req.query.attach?
+        return req.query.attach.split(',')
+    return []
+
   @::__defineGetter__ "crisco", () ->
     @__crisco
 

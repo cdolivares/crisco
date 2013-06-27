@@ -25,6 +25,8 @@ class GET
         console.log "Running default GET handler..."
         @_default CriscoModel, Aux, () ->
           #done
+      else
+        next()
 
   ###
     Method: _default 
