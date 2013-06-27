@@ -1,8 +1,9 @@
 async = require("async")
+myAsync = require("#{__dirname}/../../../helpers/async")
 
 class GET
   ###
-      Where a route object is defined as:
+      Where a route object, r, is defined as:
       {
         tag: "routeTag"
         route: "/route"
@@ -24,6 +25,8 @@ class GET
         console.log "Running default GET handler..."
         @_default CriscoModel, Aux, () ->
           #done
+      else
+        next()
 
   ###
     Method: _default 
@@ -42,37 +45,54 @@ class GET
       return next()
     rootNode = CriscoModel.getRoot()
     p = CriscoModel.getParam(rootNode.alternateName)
-    #let's find the root node and use that as the starting point.
-    drivers = CriscoModel.database.drivers
-    drivers["#{rootNode.name}"].findById p, (err, result) =>
-      if err?
-        Aux.error err
-      else
-        targets = CriscoModel.targets()
-        arr = targets.slice(0).reverse()
-        #slice off the rest of the array after the rootNode and
-        #follow ownership path from there.
-        nArr = arr.slice(arr.indexOf(rootNode.alternateName) + 1)
-        memo = {}
-        previousCollection = rootNode.alternateName
-        memo[previousCollection] = [result]
-        find = (memo, collection, callback) =>
-          clbk = (err, docs) ->
-            previousCollection = collection
-            if err?
-              callback err, null
-            else
-              callback null, _.extend(memo, docs)
-          parent =
-            collection: previousCollection
-            result: memo[previousCollection]
-          child =
-            collection: collection
-            id: CriscoModel.getParam(collection)
-          clientClbk.call(clientClbk, CriscoModel, Aux, parent, child, clbk)
-        async.reduce nArr, memo, find, (err, result) ->
-          r = _.pick result, targets[0]
-          Aux.res.send 200, {data: r}
+    if not p?
+      #this case is when we're trying to get the rootNode
+      q = {}
+      q["_#{Aux.me._type_}._id"] = Aux.me._id
+      q["_#{Aux.me._type_}.l"]= {$gt: 0}
+      CriscoModel.database.drivers["#{rootNode.name}"].find q, (err, result) =>
+        if err?
+          Aux.error err.stack
+          Aux.response.status(500).message(err.message).send()
+        else
+          Aux.response.success().raw(result).send()
+    else
+      drivers = CriscoModel.database.drivers
+      drivers["#{rootNode.name}"].findById p, (err, result) =>
+        if err?
+          Aux.error err
+        else
+          targets = CriscoModel.targets()
+          arr = targets.slice(0).reverse()
+          #slice off the rest of the array after the rootNode and
+          #follow ownership path from there.
+          nArr = arr.slice(arr.indexOf(rootNode.alternateName) + 1)
+          memo = {}
+          previousCollection = rootNode.alternateName
+          memo[previousCollection] = [result]
+          find = (memo, collection, callback) =>
+            clbk = (err, docs) ->
+              previousCollection = collection
+              if err?
+                callback err, null
+              else
+                callback null, _.extend(memo, docs)
+            parent =
+              collection: previousCollection
+              result: memo[previousCollection]
+            child =
+              collection: collection
+              id: CriscoModel.getParam(collection)
+            clientClbk.call(clientClbk, CriscoModel, Aux, parent, child, clbk)
+          async.reduce nArr, memo, find, (err, result) ->
+            if not err?
+              r = _.pick result, targets[0]
+              r = r[Object.keys(r).shift()]
+              ###
+                Let's unpack the result of getChildren from
+                the namespaced model collection.
+              ###
+              Aux.response.success().pack(r).send()
 
   @::__defineGetter__ 'route', () ->
     @__r.route
