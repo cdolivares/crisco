@@ -1,14 +1,15 @@
 async = require("async")
+_ = require("underscore")
 
 module.exports = (CriscoModels, Aux, next) ->
   console.log "Running Attachments Middleware"
   job = (type, obj) ->
       return (callback) ->
         obj.attach type, callback
-        
-  if Aux.response.payload.objs?
+  att = Aux.attachments 
+  if Aux.response.payload.objs? and not _.isEmpty(att)
     jobs = []
-    for a in Aux.attachments by 1
+    for a in att by 1
       for o in Aux.response.payload.objs by 1
         jobs.push(job(a,o))
     async.parallel jobs, (err, results) =>
