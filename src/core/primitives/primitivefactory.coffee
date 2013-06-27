@@ -32,10 +32,14 @@ class PrimitiveFactory
     P.config @__configs.app, @__configs.domain, @__database
     @__primitives[name] = P
 
-  getPrimitive: (name, domain, req, res) ->
+  ###
+    should be generalized to (name, domain, routeInfo) where req, res
+    are simply properties on routeInfo.
+  ###
+  getPrimitive: (name, domain, routeInfo) ->
     P = @__primitives[name]
     if not P?
       return null
-    return  P.init(crisco, domain, req, res)
+    return  P.init(crisco, domain, routeInfo)
 
 module.exports = PrimitiveFactory

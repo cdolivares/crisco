@@ -48,14 +48,11 @@ class CriscoAux
 
     @param - 
   ###
-  @init = (crisco, domain, req, res) ->
+  @init = (crisco, domain, routeInfo) ->
     ###
       Eventually we'll also include logic to initialize
       and cache any shared resources between CriscoModel.
     ###
-    routeInfo =
-      req: req
-      res: res
     cm = new @ crisco, domain, @__vars.database, routeInfo
     return cm
 
@@ -132,7 +129,7 @@ class CriscoAux
   ###
 
   @::__defineGetter__ "response", () ->
-    @__cache.response = @__cache.response || new Response(@req, @res)
+    @__cache.response = @__cache.response || new Response(@__routeInfo)
 
   ###
     req - An untouched Express.js req object.
@@ -150,6 +147,13 @@ class CriscoAux
 
   @::__defineGetter__ "body", () ->
     @__routeInfo.req.body
+
+  @::__defineGetter__ "attachments", () ->
+    req = @__routeInfo.req
+    if req.query?
+      if req.query.attach?
+        return req.query.attach.split(',')
+    return []
 
   @::__defineGetter__ "crisco", () ->
     @__crisco

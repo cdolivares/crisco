@@ -45,7 +45,8 @@ class BaseResource
         {
           tag: "SomeTag",
           route: "SomeRoute",
-          handler: "SomeHandler"
+          handler: "SomeHandler",
+          getOne: Boolean //whether this route should return a single object or not.
         }
       ###
       f._routes.push
@@ -53,6 +54,25 @@ class BaseResource
         route:   f.utils._prefixRoute(route)
         method: "GET"
         handler: routeHandler
+        getOne: false
+      f._reset()
+
+    f.app.getOne = (route, routeHandler) ->
+      ###
+        store app routes as tuples with
+        {
+          tag: "SomeTag",
+          route: "SomeRoute",
+          handler: "SomeHandler",
+          getOne: Boolean //whether this route should return a single object or not.
+        }
+      ###
+      f._routes.push
+        tag:     f.__vars.t
+        route:   f.utils._prefixRoute(route)
+        method: "GET"
+        handler: routeHandler
+        getOne: true
       f._reset()
 
     f.app.post = (route, routeHandler) ->

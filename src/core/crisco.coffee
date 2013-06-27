@@ -16,6 +16,8 @@ PermissionMiddleware =
     require("#{__dirname}/middleware.default/permission")
 AuthenticationMiddleware =
     require("#{__dirname}/middleware.default/authentication")
+AttachmentMiddleware =
+    require("#{__dirname}/middleware.default/attachment")
 
 ###
   Make default Database Permission object available
@@ -124,6 +126,7 @@ class Crisco
 
     @registerMiddleware "verifyPermissions", PermissionMiddleware
     @registerMiddleware "authenticate", AuthenticationMiddleware
+    @registerMiddleware  "addAttachments", AttachmentMiddleware
 
     # #Initialization a bit verbose here...let's cleanup
     app = new ApplicationInitializer(

@@ -49,17 +49,18 @@ class CriscoModel
 
     @param - 
   ###
-  @init = (crisco, domain, req) ->
+  @init = (crisco, domain, routeInfo) ->
     ###
       Eventually we'll also include logic to initialize
       and cache any shared resources between CriscoModel.
     ###
-    routeInfo =
+    req = routeInfo.req
+    StandardizedRequestObject =
       route:  _.extend(req.route, {url: req.url})
       method: req.method
       query:  req.query
       body:   req.body
-    cm = new @ crisco, domain, @__vars.database, routeInfo
+    cm = new @ crisco, domain, @__vars.database, StandardizedRequestObject
     return cm
 
 

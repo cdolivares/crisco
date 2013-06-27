@@ -16,8 +16,11 @@ class DefaultAction
     Aux = req.__crisco.aux
     @__r.handler CriscoAction, Aux, (runDefault=false) =>
       #require users to call this function and pass in some
-      #optional flag for 
-      console.log "There is no default action implementation. Skipping..."
+      #optional flag for
+      if runDefault
+        console.log "There is no default action implementation. Skipping..."
+      else
+        next()
 
   @::__defineGetter__ 'route', () ->
     @__r.route
