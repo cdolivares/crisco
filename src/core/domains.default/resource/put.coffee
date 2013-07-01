@@ -24,10 +24,17 @@ class PUT
     targets = CriscoModel.targets()
     targetCollection = targets[0]
     targetNode = CriscoModel.database.nodeManager.find(targetCollection)
+
+    TargetModel = CriscoModel.database.drivers[targetNode.name]
+    ###
+      Need to remap properties to canonical names if database field
+      rename has been used.
+    ###
+
     targetObject =
       collection: targetCollection
       id: CriscoModel.getParam(targetCollection)
-      properties: Aux.body
+      properties: TargetModel.unmap(Aux.body)
 
     clientClbk CriscoModel, Aux, targetObject, (err, result) ->
       if err?
