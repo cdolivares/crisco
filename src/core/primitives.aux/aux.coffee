@@ -159,7 +159,7 @@ class CriscoAux
     @__crisco
 
   @::__defineGetter__ "me", () ->
-    if not @__routeInfo.req.__crisco?
+    if not @__routeInfo.req? or not @__routeInfo.req.__crisco?
       return null
     else
       @__routeInfo.req.__crisco.me
