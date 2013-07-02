@@ -45,14 +45,11 @@ class CriscoAction
 
     @param - 
   ###
-  @init = (crisco, domain, req, res) ->
+  @init = (crisco, domain, routeInfo) ->
     ###
       Eventually we'll also include logic to initialize
       and cache any shared resources between CriscoModel.
     ###
-    routeInfo =
-      req: req
-      body: req.body
     cm = new @ crisco, domain, @__vars.database, routeInfo
     return cm
 
