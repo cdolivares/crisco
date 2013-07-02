@@ -4,7 +4,8 @@ module.exports = (CriscoModels, Aux, next) ->
     Aux.res.json 401, {message: "Not Authorized"}
   targets = CriscoModels.targets()
   nodeManager = CriscoModels.database.nodeManager
-  if targets.length is 1  #this is for root resources that are also root to the user. eg. /classes
+  if (targets.length is 1)  and #this is for root resources that are also root to the user. eg. /classes
+     not CriscoModels.getParam(targets[0])?
     return next()
   for target in targets by 1
     node = nodeManager.find target
