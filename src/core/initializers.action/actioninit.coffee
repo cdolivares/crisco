@@ -19,7 +19,7 @@ class ActionInitializer
     initializes Crisco primitives. For now Actions
     aren't separated into domains like resources...
   ###
-  get: () ->
-    return @__actionInit.getExpressMiddleware()
+  get: (domain, routeInfo) ->
+    return @__actionInit.getExpressMiddleware(domain, routeInfo)
 
 module.exports = ActionInitializer
