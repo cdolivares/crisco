@@ -83,7 +83,7 @@ class ActionDomain
             return z.handler()
           )
       args =  [defaultAction.route] 
-                .concat(@__aInit.get(@__config.domain))
+                .concat(@__aInit.get(@__config.domain, r))
                 .concat(wrappedBeforeHooks) #map to middleware defns and filter out undefined values
                 .concat([defaultAction.handler])
                 .concat(wrappedAfterHooks)
