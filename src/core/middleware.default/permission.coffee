@@ -4,7 +4,9 @@ module.exports = (CriscoModels, Aux, next) ->
     Aux.res.json 401, {message: "Not Authorized"}
   targets = CriscoModels.targets()
   nodeManager = CriscoModels.database.nodeManager
-  for target in targets
+  if targets.length is 1  #this is for root resources that are also root to the user. eg. /classes
+    return next()
+  for target in targets by 1
     node = nodeManager.find target
     if node.isRoot
       return CriscoModels.populate (err, models) ->
@@ -16,7 +18,7 @@ module.exports = (CriscoModels, Aux, next) ->
         if not v?
           console.error "-------------------------"
           console.error "No permission verification handler registered:"
-          console.error "    -url: #{Axu.req.url}"
+          console.error "    -url: #{Aux.req.url}"
           console.error "-------------------------"
           return deny()
         o =
