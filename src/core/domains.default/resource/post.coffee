@@ -17,6 +17,8 @@ class POST
         console.log "Running default POST handler..."
         @_default CriscoModel, Aux, () ->
           #done
+      else
+        next()
 
 
   _default: (CriscoModel, Aux, next) ->
