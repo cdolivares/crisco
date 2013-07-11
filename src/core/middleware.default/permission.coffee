@@ -9,6 +9,8 @@ module.exports = (CriscoModels, Aux, next) ->
     return next()
   for target in targets by 1
     node = nodeManager.find target
+    if not node?
+      continue
     if node.isRoot
       return CriscoModels.populate (err, models) ->
         #alternateName is lowercased plural
