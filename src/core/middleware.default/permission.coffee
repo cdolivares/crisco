@@ -1,7 +1,9 @@
 module.exports = (CriscoModels, Aux, next) ->
   console.log "Running Permission Middleware"
   deny = () ->
-    Aux.res.json 401, {message: "Not Authorized"}
+    Aux.response.status(401).message("Not Authorized").send() res.json 401, {message: "Not Authorized"}
+  notFound = (type) ->
+    Aux.response.status(404).message("Object for #{type} id not found").send()
   targets = CriscoModels.targets()
   nodeManager = CriscoModels.database.nodeManager
   if (targets.length is 1)  and #this is for root resources that are also root to the user. eg. /classes
@@ -9,10 +11,14 @@ module.exports = (CriscoModels, Aux, next) ->
     return next()
   for target in targets by 1
     node = nodeManager.find target
+    if not node?
+      continue
     if node.isRoot
       return CriscoModels.populate (err, models) ->
         #alternateName is lowercased plural
         t = models[node.alternateName]
+        if not t?
+          return notFound(node.alternateName)
         me = Aux.me
         #check permissions here...
         v = Aux.crisco.getMiddleware "verify:permission"

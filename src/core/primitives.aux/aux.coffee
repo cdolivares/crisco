@@ -1,4 +1,5 @@
 Response = require("#{__dirname}/response")
+Info     = require("#{__dirname}/info")
 
 class CriscoAux
 
@@ -42,20 +43,20 @@ class CriscoAux
     Deals with initializing a new instance of
     CriscoModel.  This understands how to initialize
     off a "req" object from express.
-  
-    @param - domain - A string representing the
-             domain to initalize a new string
+    
+    @param - crisco
 
-    @param - 
+    @param - domain - A string representing the
+             domain to initalize a new Aux object.
+
+    @param - routeInfo
   ###
   @init = (crisco, domain, routeInfo) ->
     ###
       Eventually we'll also include logic to initialize
       and cache any shared resources between CriscoModel.
     ###
-    cm = new @ crisco, domain, @__vars.database, routeInfo
-    return cm
-
+    return new @ crisco, domain, @__vars.database, routeInfo
 
   ###
     
@@ -131,6 +132,10 @@ class CriscoAux
   @::__defineGetter__ "response", () ->
     @__cache.response = @__cache.response || new Response(@__routeInfo)
 
+  @::__defineGetter__ "info", () ->
+    @__cache.info = @__cache.info || new Info()
+
+
   ###
     req - An untouched Express.js req object.
   ###
@@ -144,6 +149,13 @@ class CriscoAux
 
   @::__defineGetter__ "res", () ->
     @__routeInfo.res
+
+  ###
+    Contract is to return an object keyed with
+    the query objects.
+  ###
+  @::__defineGetter__ "query", () ->
+    @__routeInfo.req.query
 
   @::__defineGetter__ "body", () ->
     @__routeInfo.req.body
