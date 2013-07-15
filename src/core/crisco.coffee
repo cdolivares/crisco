@@ -126,7 +126,7 @@ class Crisco
 
     @registerMiddleware "verifyPermissions", PermissionMiddleware
     @registerMiddleware "authenticate", AuthenticationMiddleware
-    @registerMiddleware  "addAttachments", AttachmentMiddleware
+    @registerMiddleware "addAttachments", AttachmentMiddleware
 
     # #Initialization a bit verbose here...let's cleanup
     app = new ApplicationInitializer(
