@@ -51,6 +51,7 @@ class Crisco
 
 
     @__customMiddleware = {}
+    @__customDecorators = {}
     @__configCallbacks = {}
 
 
@@ -65,8 +66,21 @@ class Crisco
   registerMiddleware: (name, middleware) ->
     @__customMiddleware[name] = middleware
     #register with Action and Resources
-    BaseAction.register name, middleware
-    BaseResource.register name, middleware
+    BaseAction.registerMiddleware name, middleware
+    BaseResource.registerMiddleware name, middleware
+
+  ###
+    Method: registerDecorator
+
+    Allows clients to register "route decorators" that
+    can decorate routes with an @type "string" syntax.
+    Crisco will insert methods registered here in place
+    of the default route handler.  Only registered to
+    classes that extend BaseResource for now.
+  ###
+  registerDecorator: (name, decorator) ->
+    @__customDecorators[name] = decorator
+    BaseResource.registerDecorator name, decorator
 
   ###
   ###

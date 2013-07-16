@@ -8,9 +8,13 @@
 
 class BaseResource
 
-  @register = (name, middleware) ->
+  @registerMiddleware = (name, middleware) ->
     @_m = @_m || {}
     @_m[name] = middleware
+
+  @registerDecorator = (name, dec) ->
+    @_d = @_d || {}
+    @_d[name] = dec
 
   @clone = (crisco) ->
     f = () ->
@@ -31,6 +35,9 @@ class BaseResource
     f.tag = (tag) ->
       @__vars.t = tag
 
+    f.type = (type) ->
+      @__vars.type = type
+
     #let's make f.app simply an application loader that standardizes the 
     #action and route files in a way that CriscoRouter can understand.
     f.app = () ->
@@ -41,7 +48,7 @@ class BaseResource
 
     f.app.get = (route, routeHandler) ->
       ###
-        store app routes as tuples with
+        store app routes as obj with
         {
           tag: "SomeTag",
           route: "SomeRoute",
@@ -51,6 +58,7 @@ class BaseResource
       ###
       f._routes.push
         tag:     f.__vars.t
+        type:    f.__vars.type
         route:   f.utils._prefixRoute(route)
         method: "GET"
         handler: routeHandler
@@ -59,7 +67,7 @@ class BaseResource
 
     f.app.getOne = (route, routeHandler) ->
       ###
-        store app routes as tuples with
+        store app routes as obj with
         {
           tag: "SomeTag",
           route: "SomeRoute",
@@ -78,6 +86,7 @@ class BaseResource
     f.app.post = (route, routeHandler) ->
       f._routes.push
         tag: f.__vars.t
+        type: f.__vars.type
         route: f.utils._prefixRoute(route)
         method: "POST"
         handler: routeHandler
@@ -86,6 +95,7 @@ class BaseResource
     f.app.put  = (route, routeHandler) ->
       f._routes.push
         tag: f.__vars.t
+        type: f.__vars.type
         route: f.utils._prefixRoute(route)
         method: "PUT"
         handler: routeHandler
@@ -101,6 +111,7 @@ class BaseResource
 
     f._reset = () ->
       f.__vars._t = null
+      f.__vars.type = null
 
     f.utils = {}
 

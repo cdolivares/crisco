@@ -8,7 +8,7 @@
 
 class BaseAction
 
-  @register = (name, middleware) ->
+  @registerMiddleware = (name, middleware) ->
     @_m = @_m || {}
     @_m[name] = middleware
 
