@@ -7,14 +7,18 @@ class PUT
   handler: (req, res, next) =>
     CriscoModel = req.__crisco.model
     Aux = req.__crisco.aux
-    @__r.handler CriscoModel, Aux, (runDefault=false) =>
+    @__r.handler CriscoModel, Aux, (runDefault=false, clbk) =>
       #require users to call this function and pass in some
       #optional flag for 
       if runDefault
         console.log "Running default PUT handler..."
         @_default CriscoModel, Aux, () ->
-          #done
-
+          if clbk?
+            clbk () ->
+              next()
+          else
+            Aux.send()
+            next()
 
   _default: (CriscoModel, Aux, next) ->
     clientClbk = @__c.getMiddleware("resource:default:put")

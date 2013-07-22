@@ -24,7 +24,12 @@ class GET
       if runDefault
         console.log "Running default GET handler..."
         @_default CriscoModel, Aux, () ->
-          #done
+          if clbk?
+            clbk () ->
+              next()
+          else
+            Aux.send()
+            next()
       else
         next()
 
@@ -92,7 +97,9 @@ class GET
                 Let's unpack the result of getChildren from
                 the namespaced model collection.
               ###
-              Aux.response.success().pack(r).send()
+              Aux.response.success().pack(r)
+              Aux.info.set 'default:get', r
+              next()
 
   @::__defineGetter__ 'route', () ->
     @__r.route
