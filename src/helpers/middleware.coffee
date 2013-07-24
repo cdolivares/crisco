@@ -33,8 +33,8 @@ exports.transform = (m) ->
   for n, c of m
     strs = _.map(c.split(','), (el) -> return el.replace(/\s/g, ""))
     if strs[0] is 'all'
-      for t, m of keyed #add to each existing tag
-        m.push n
+      for x, y of keyed #add to each existing tag
+        y.push n
       if not keyed['default']?
         keyed['default'] = [n]
     else
@@ -42,5 +42,4 @@ exports.transform = (m) ->
         arr = (keyed[str] || (keyed["default"] || []))
         arr.push n
         keyed[str] = arr
-
   return keyed

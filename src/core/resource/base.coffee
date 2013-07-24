@@ -1,3 +1,4 @@
+_ = require("underscore")
 
 ###
   This stub initializes the application state...also allows state serialization
@@ -28,8 +29,14 @@ class BaseResource
     f.after = (afterHooks) ->
       @__vars.ah = afterHooks
 
+    ###
+      Route Decorators
+    ###
     f.tag = (tag) ->
       @__vars.t = tag
+
+    f.requireFlags = (flags) ->
+      @__vars.flags = _.map flags.split(','), (e) -> e.trim()
 
     #let's make f.app simply an application loader that standardizes the 
     #action and route files in a way that CriscoRouter can understand.
@@ -51,6 +58,7 @@ class BaseResource
       ###
       f._routes.push
         tag:     f.__vars.t
+        featureFlags:   f.__vars.flags
         route:   f.utils._prefixRoute(route)
         method: "GET"
         handler: routeHandler
@@ -69,6 +77,7 @@ class BaseResource
       ###
       f._routes.push
         tag:     f.__vars.t
+        featureFlags:   f.__vars.flags
         route:   f.utils._prefixRoute(route)
         method: "GET"
         handler: routeHandler
@@ -78,6 +87,7 @@ class BaseResource
     f.app.post = (route, routeHandler) ->
       f._routes.push
         tag: f.__vars.t
+        featureFlags:   f.__vars.flags
         route: f.utils._prefixRoute(route)
         method: "POST"
         handler: routeHandler
@@ -86,6 +96,7 @@ class BaseResource
     f.app.put  = (route, routeHandler) ->
       f._routes.push
         tag: f.__vars.t
+        featureFlags:   f.__vars.flags
         route: f.utils._prefixRoute(route)
         method: "PUT"
         handler: routeHandler
@@ -94,13 +105,15 @@ class BaseResource
     f.app.del  = (route, routeHandler) ->
       f._routes.push
         tag: f.__vars.t
+        featureFlags:   f.__vars.flags
         route: f.utils._prefixRoute(route)
         method: "DEL"
         handler: routeHandler
       f._reset()
 
     f._reset = () ->
-      f.__vars._t = null
+      f.__vars.t = null
+      f.__vars.flags = null
 
     f.utils = {}
 
