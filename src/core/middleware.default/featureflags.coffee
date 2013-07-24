@@ -15,10 +15,15 @@ module.exports = (CriscoModels, Aux, next) ->
       next()
     else
       resourceId = CriscoModels.getParam(root.alternateName)
-      Aux.me.getFeatureFlags root.name, {_id: resourceId}, (featureFlags) =>
-        console.log "Teacher feature flags", featureFlags
-        confFlags = root.configuration.featureFlags
-        if _.intersection(confFlags, featureFlags).length is confFlags.length
-          next()
-        else
-          deny()
+      v = Aux.crisco.getMiddleware "verify:featureFlags"
+      if not v?
+        console.log "Client did not register a verify:featureFlags callback. Skipping..."
+        next()
+      else
+        v root.name, {_id: resourceId}, (featureFlags) =>
+          console.log "Teacher feature flags", featureFlags
+          confFlags = root.configuration.featureFlags
+          if _.intersection(confFlags, featureFlags).length is confFlags.length
+            next()
+          else
+            deny()
