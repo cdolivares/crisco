@@ -18,7 +18,7 @@ module.exports = (CriscoModels, Aux, next) ->
       Aux.me.getFeatureFlags root.name, {_id: resourceId}, (featureFlags) =>
         console.log "Teacher feature flags", featureFlags
         confFlags = root.configuration.featureFlags
-        if _.isEmpty(_.difference(confFlags, featureFlags))
+        if _.intersection(confFlags, featureFlags).length is confFlags.length
           next()
         else
           deny()
