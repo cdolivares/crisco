@@ -51,6 +51,15 @@ class BaseAction
         handler: actionHandler
       f._reset()
 
+    f.app.options = (route, routeHandler) ->
+      f._routes.push
+        tag: f.__vars.t
+        featureFlags: f.__vars.flags
+        route: f.utils._prefixRoute(route)
+        method: "OPTIONS"
+        handler: routeHandler
+      f._reset()
+
     f._reset = () ->
       @__vars.t = null
       @__vars.flags = null

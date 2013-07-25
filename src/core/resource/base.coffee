@@ -111,6 +111,15 @@ class BaseResource
         handler: routeHandler
       f._reset()
 
+    f.app.options = (route, routeHandler) ->
+      f._routes.push
+        tag: f.__vars.t
+        featureFlags: f.__vars.flags
+        route: f.utils._prefixRoute(route)
+        method: "OPTIONS"
+        handler: routeHandler
+      f._reset()
+
     f._reset = () ->
       f.__vars.t = null
       f.__vars.flags = null
