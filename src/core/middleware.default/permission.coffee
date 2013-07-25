@@ -1,7 +1,7 @@
 module.exports = (CriscoModels, Aux, next) ->
   console.log "Running Permission Middleware"
   deny = () ->
-    Aux.response.status(401).message("Not Authorized").send() res.json 401, {message: "Not Authorized"}
+    Aux.response.status(401).message("Not Authorized").send()
   notFound = (type) ->
     Aux.response.status(404).message("Object for #{type} id not found").send()
   targets = CriscoModels.targets()
