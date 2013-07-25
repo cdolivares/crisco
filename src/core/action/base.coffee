@@ -28,6 +28,15 @@ class BaseAction
     f.after = (afterHooks) ->
       @__vars.ah = afterHooks
 
+    ###
+      Route Decorators
+    ###
+    f.tag = (tag) ->
+      @__vars.t = tag
+
+    f.requireFlags = (flags) ->
+      @__vars.flags = _.map flags.split(','), (e) -> e.trim()
+
     f.app = () ->
 
     f.domain = (d) ->
@@ -36,13 +45,24 @@ class BaseAction
     f.app.post = (route, actionHandler) ->
       f._routes.push
         tag: f.__vars.t
+        featureFlags: f.__vars.flags
         route: f.utils._prefixRoute(route)
         method: "POST"
         handler: actionHandler
       f._reset()
 
+    f.app.options = (route, routeHandler) ->
+      f._routes.push
+        tag: f.__vars.t
+        featureFlags: f.__vars.flags
+        route: f.utils._prefixRoute(route)
+        method: "OPTIONS"
+        handler: routeHandler
+      f._reset()
+
     f._reset = () ->
       @__vars.t = null
+      @__vars.flags = null
 
     f.utils = {}
 

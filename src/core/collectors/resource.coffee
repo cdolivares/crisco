@@ -29,7 +29,10 @@ class ResourceCollector
   ###
 
   add: (name, config) ->
-    #inject domain handlers with the conditioner.
+    ###
+      Note(chris): Injecting the name of the configuration into
+      the configuration object for a few reasons.
+    ###
     rd = new ResourceDomain(@__c, @__e, config, @__r)
     rd.enrich()
     @__resources[name] = rd

@@ -60,6 +60,7 @@ class CriscoModel
       method: req.method
       query:  req.query
       body:   req.body
+      routeConfig: @__vars.configs.domain.resource[domain]
     cm = new @ crisco, domain, @__vars.database, StandardizedRequestObject
     return cm
 

@@ -150,6 +150,10 @@ class CriscoAux
   @::__defineGetter__ "res", () ->
     @__routeInfo.res
 
+
+  @::__defineGetter__ "routeInfo", () ->
+    @__routeInfo
+
   ###
     Contract is to return an object keyed with
     the query objects.

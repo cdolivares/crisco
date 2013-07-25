@@ -21,6 +21,10 @@ routeHandlers =
     method: "delete"
     klass: require("#{__dirname}/../domains.default/resource/del")
 
+  "OPTIONS" :
+    method: "options"
+    klass: require("#{__dirname}/../domains.default/resource/options")
+
 ###
   Crisco Middleware Wrapper
 ###
