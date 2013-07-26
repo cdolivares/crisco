@@ -17,7 +17,7 @@ class PUT
             clbk () ->
               next()
           else
-            Aux.send()
+            Aux.response.send()
             next()
 
   _default: (CriscoModel, Aux, next) ->

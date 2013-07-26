@@ -28,7 +28,7 @@ class GET
             clbk () ->
               next()
           else
-            Aux.send()
+            Aux.response.send()
             next()
       else
         next()
