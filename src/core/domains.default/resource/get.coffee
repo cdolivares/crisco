@@ -1,5 +1,6 @@
 async = require("async")
 myAsync = require("#{__dirname}/../../../helpers/async")
+_ = require("underscore")
 
 class GET
   ###
@@ -54,13 +55,17 @@ class GET
       #this case is when we're trying to get the rootNode
       q = {}
       q["_#{Aux.me._type_}._id"] = Aux.me._id
-      q["_#{Aux.me._type_}.l"]= {$gt: 0}
+      # q["_#{Aux.me._type_}.l"]= {$gt: 0}
       CriscoModel.database.drivers["#{rootNode.name}"].find q, (err, result) =>
         if err?
           Aux.error err.stack
           Aux.response.status(500).message(err.message).send()
         else
-          Aux.response.success().raw(result).send()
+          r = _.filter result, (e) -> #HACK to filter out rejected resources for now!
+            for p in e["_#{Aux.me._type_}"] by 1
+              if p._id is Aux.me._id
+                return p.l >= 0
+          Aux.response.success().pack(r).send()
     else
       drivers = CriscoModel.database.drivers
       drivers["#{rootNode.name}"].findById p, (err, result) =>
