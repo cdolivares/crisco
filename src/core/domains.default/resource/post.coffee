@@ -21,7 +21,8 @@ class POST
               next()
           else
             #either send response or defer
-            next()
+            Aux.response.send()
+            # next()
       else
         next()
 

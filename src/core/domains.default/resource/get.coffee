@@ -19,7 +19,7 @@ class GET
   handler: (req, res, next) =>
     CriscoModel = req.__crisco.model
     Aux = req.__crisco.aux
-    @__r.handler CriscoModel, Aux, (runDefault=false) =>
+    @__r.handler CriscoModel, Aux, (runDefault=false, clbk) =>
       #require users to call this function and pass in some
       #optional flag for 
       if runDefault
@@ -30,7 +30,7 @@ class GET
               next()
           else
             Aux.response.send()
-            next()
+            # next()
       else
         next()
 

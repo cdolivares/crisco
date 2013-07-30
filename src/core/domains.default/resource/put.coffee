@@ -18,7 +18,7 @@ class PUT
               next()
           else
             Aux.response.send()
-            next()
+            # next()
 
   _default: (CriscoModel, Aux, next) ->
     clientClbk = @__c.getMiddleware("resource:default:put")
