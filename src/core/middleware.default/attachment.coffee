@@ -5,7 +5,7 @@ module.exports = (CriscoModels, Aux, next) ->
   console.log "Running Attachments Middleware"
   job = (type, obj) ->
       return (callback) ->
-        obj.attach type, callback
+        obj.attach type, Aux.me, callback
   att = Aux.attachments 
   if Aux.response.payload.objs? and not _.isEmpty(att)
     jobs = []

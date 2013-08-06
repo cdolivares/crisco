@@ -67,7 +67,8 @@ class GET
             # for p in e["_#{Aux.me._type_}"] by 1
             #   if "#{p._id}" is "#{Aux.me._id}"
             #     return p.l >= 0
-          Aux.response.success().pack(r).send()
+          Aux.response.success().pack(r)
+          next()
     else
       drivers = CriscoModel.database.drivers
       drivers["#{rootNode.name}"].findById p, (err, result) =>
