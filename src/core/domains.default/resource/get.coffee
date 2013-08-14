@@ -64,9 +64,6 @@ class GET
           r = _.filter result, (e) -> #HACK to filter out rejected resources for now!
             p = e["_#{Aux.me._type_}"].id(Aux.me.id)
             return p.l >= 0
-            # for p in e["_#{Aux.me._type_}"] by 1
-            #   if "#{p._id}" is "#{Aux.me._id}"
-            #     return p.l >= 0
           Aux.response.success().pack(r)
           next()
     else
